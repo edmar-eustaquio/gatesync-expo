@@ -9,7 +9,7 @@ import { useAppContext } from "@/AppProvider";
 import { auth } from "@/firebase";
 import { router } from "expo-router";
 
-export default function StudentTopBar({ title }: { title: string }) {
+export default function ParentTopBar({ title }: { title: string }) {
   const [visible, setVisible] = useState(false);
 
   const { isLoading, dispatch } = useFirebaseHook();
@@ -32,7 +32,9 @@ export default function StudentTopBar({ title }: { title: string }) {
         <TopbarItem
           text="Profile"
           onPress={() => {
-            router.navigate("/(student)/profile");
+            console.log("sadfdasfsaf");
+
+            router.navigate("/(parent)/profile");
           }}
         />
         <TopbarItem text="Logout" onPress={onLogout} />
@@ -41,23 +43,13 @@ export default function StudentTopBar({ title }: { title: string }) {
       <Sidebar visible={visible} setVisible={setVisible}>
         <SidebarItem
           setSidebarVisible={setVisible}
-          text="QR Code"
-          route={"/qr-code"}
+          text="Linked Childrens"
+          route={"/linked-children"}
         />
         <SidebarItem
           setSidebarVisible={setVisible}
-          text="Activity Logs"
-          route={"/logs"}
-        />
-        <SidebarItem
-          setSidebarVisible={setVisible}
-          text="Linked Parent"
-          route={"/linked-parents"}
-        />
-        <SidebarItem
-          setSidebarVisible={setVisible}
-          text="Schedules"
-          route={"/schedules"}
+          text="Profile"
+          route={"/(parent)/profile"}
         />
         <SidebarItem
           setSidebarVisible={setVisible}

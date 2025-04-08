@@ -39,14 +39,27 @@ export default function Login() {
         // Ensure Firebase Auth is correctly referenced
         const cred = await signInWithEmailAndPassword(auth, email, password);
 
+        // if (!cred.user.emailVerified) {
+        //   await auth.signOut();
+        //   Alert.alert("Error", "Email not verified!!!");
+        //   return;
+        // }
+
         const userDoc = await find("users", cred.user.uid);
 
         const userData = userDoc.data();
+        if (userData?.role != "Student" && userData?.role != "Parent") {
+          await auth.signOut();
+          return;
+        }
+
         setUser({
           id: cred.user.uid,
           ...userData,
         });
-        router.replace("/(studenttabs)");
+        router.replace(
+          userData.role == "Student" ? "/(studenttabs)" : "/(parenttabs)"
+        );
       },
       onError: (error) => {
         console.error("Error logging in:", error);
@@ -131,14 +144,9 @@ export default function Login() {
       <Text style={styles.haveacc}>Don't have an account?</Text>
       <TouchableOpacity
         style={styles.registerLink}
-        onPress={() => router.navigate("/signup")}
+        onPress={() => router.navigate("/register-options")}
       >
-        <Text
-          style={styles.registerText}
-          onPress={() => router.navigate("/register-options")}
-        >
-          Register here
-        </Text>
+        <Text style={styles.registerText}>Register here</Text>
       </TouchableOpacity>
     </View>
   );

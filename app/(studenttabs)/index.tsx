@@ -33,7 +33,7 @@ export default function HomeScreen() {
         <View style={styles.widget}>
           <TouchableOpacity
             style={styles.widgetbutton}
-            // onPress={() => navigation.navigate('LinkParent')}
+            onPress={() => router.navigate("/linked-parents")}
           >
             <Image
               source={require("@/assets/images/parent_.png")}
@@ -55,7 +55,7 @@ export default function HomeScreen() {
 
           <TouchableOpacity
             style={styles.widgetbutton2}
-            // onPress={() => navigation.navigate('ActivityLogs')}
+            onPress={() => router.navigate("/logs")}
           >
             <Image
               source={require("@/assets/images/logs.png")}

@@ -25,20 +25,29 @@ export default function RootLayout() {
   }
 
   return (
-      <AppProvider>
-        <Stack
-          screenOptions={{
-            headerBackTitle: "Back",
-          }}
-        >
-          <Stack.Screen name="(auth)/login" options={{ headerShown:false }} />
-          <Stack.Screen name="(auth)/register-options" options={{ headerShown:false }} />
-          <Stack.Screen name="(auth)/student-signup" options={{ headerShown:false }} />
-          <Stack.Screen name="(auth)/parent-signup" options={{ headerShown:false }} />
-          <Stack.Screen name="signup" options={{ headerShown:false }} />
-          <Stack.Screen name="(studenttabs)" options={{ headerShown: false }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </AppProvider>
+    <AppProvider>
+      <Stack
+        screenOptions={{
+          headerBackTitle: "Back",
+        }}
+      >
+        <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(auth)/register-options"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(auth)/student-signup"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="(auth)/parent-signup"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="(studenttabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(parenttabs)" options={{ headerShown: false }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </AppProvider>
   );
 }

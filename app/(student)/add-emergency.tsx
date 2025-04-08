@@ -41,7 +41,7 @@ export default function addEmergency() {
     }
 
     dispatch({
-      process: async ({ add, serverTimestamp }) => {
+      process: async ({ get, where, add, serverTimestamp }) => {
         const emergencyData = {
           name: user?.name, // Save the username
           reason: reason,
@@ -51,6 +51,22 @@ export default function addEmergency() {
         };
 
         await add("emergencies", emergencyData);
+
+        get(
+          "linkings",
+          where("studentId", "==", user?.id),
+          where("status", "==", "Accepted")
+        ).then(({ docs }) => {
+          for (const dc of docs) {
+            add("notifications", {
+              receiverId: dc.data().parentId,
+              title: "Emergency Status",
+              message: `${user?.name} added emergency due to ${reason}.`,
+              date: serverTimestamp(),
+              prompt: false,
+            });
+          }
+        });
 
         Alert.alert("Success", `Submitted Reason: ${reason}`);
       },
@@ -66,10 +82,16 @@ export default function addEmergency() {
       {/* Navigation Bar */}
       <View style={styles.navbar}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Image source={require("@/assets/images/back.png")} style={styles.back} />
+          <Image
+            source={require("@/assets/images/back.png")}
+            style={styles.back}
+          />
         </TouchableOpacity>
         <View style={styles.navCenter}>
-          <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
+          <Image
+            source={require("@/assets/images/logo.png")}
+            style={styles.logo}
+          />
           <Image
             source={require("@/assets/images/GateSync.png")}
             style={styles.gatesync}

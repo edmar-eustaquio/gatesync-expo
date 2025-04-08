@@ -22,7 +22,7 @@ import {
   WhereFilterOp,
   OrderByDirection,
   QueryOrderByConstraint,
-  QueryConstraint
+  QueryConstraint,
 } from "firebase/firestore";
 import { useState } from "react";
 
@@ -46,7 +46,7 @@ export default function useFirebaseHook() {
       remove,
       serverTimestamp,
       where,
-      orderBy
+      orderBy,
     }: {
       get: (
         collectionName: string,
@@ -71,15 +71,22 @@ export default function useFirebaseHook() {
       ) => Promise<void>;
       remove: (collectionName: string, uid: string) => Promise<void>;
       serverTimestamp: () => FieldValue;
-      where: (fieldPath: string | FieldPath, opStr: WhereFilterOp, value: unknown) => QueryFieldFilterConstraint;
-      orderBy: (fieldPath: string | FieldPath, directionStr?: OrderByDirection) => QueryOrderByConstraint;
+      where: (
+        fieldPath: string | FieldPath,
+        opStr: WhereFilterOp,
+        value: unknown
+      ) => QueryFieldFilterConstraint;
+      orderBy: (
+        fieldPath: string | FieldPath,
+        directionStr?: OrderByDirection
+      ) => QueryOrderByConstraint;
     }) => Promise<any>;
     onSuccess?: () => void;
     onError?: (error: string) => void;
     finished?: () => void;
   }) => {
     if (isLoading) return;
-    
+
     setIsError(false);
     setError(null);
     setLoading(true);
@@ -93,11 +100,11 @@ export default function useFirebaseHook() {
       remove,
       serverTimestamp,
       where,
-      orderBy
+      orderBy,
     })
       .catch((e) => {
-        console.log('has error', e);
-        
+        console.log("has error", e);
+
         setError(e);
         setIsError(true);
         if (onError) onError(e);
@@ -143,3 +150,5 @@ const update = async (collectionName: string, uid: string, data: object) => {
 const remove = async (collectionName: string, uid: string) => {
   await deleteDoc(doc(db, collectionName, uid));
 };
+
+export { update };

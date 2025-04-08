@@ -4,7 +4,10 @@ import useFirebaseHook from "@/hooks/useFirebaseHook";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import React, { useState } from "react";
 import {
   Alert,
@@ -62,7 +65,13 @@ export default function StudentSignup() {
     }
 
     dispatch({
-      process: async ({ set }) => {
+      process: async ({ set, get, where }) => {
+        const snap = await get("users", where("idNumber", "==", idNumber));
+        if (snap.docs.length > 0) {
+          Alert.alert("Error", "Student ID already exists");
+          return;
+        }
+
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -72,7 +81,7 @@ export default function StudentSignup() {
 
         // Step 2: Send a verification email
         // if (user) {
-        //     await sendEmailVerification(user);
+        await sendEmailVerification(user);
         //     Alert.alert('Verification Email Sent', 'Please check your inbox to verify your email address.');
         // }
 

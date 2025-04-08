@@ -15,8 +15,8 @@ import tw from "tailwind-react-native-classnames";
 import { router } from "expo-router";
 import useScreenFocusHook from "@/hooks/useScreenFocusHook";
 
-const LinkedParent = () => {
-  const [linkedParents, setLinkedParents] = useState<any>([]);
+const Linked = () => {
+  const [linkedChilds, setLinkedChilds] = useState<any>([]);
 
   const { user } = useAppContext();
   const { isLoading, dispatch } = useFirebaseHook();
@@ -24,8 +24,8 @@ const LinkedParent = () => {
     useFirebaseHook();
 
   const refresh = async ({ get, where }: { get: any; where: any }) => {
-    const snap = await get("linkings", where("studentId", "==", user?.id));
-    setLinkedParents(
+    const snap = await get("linkings", where("parentId", "==", user?.id));
+    setLinkedChilds(
       snap.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data(),
@@ -42,10 +42,10 @@ const LinkedParent = () => {
     });
   });
 
-  const unlinkParent = async (id: string, receiverId: string) => {
+  const unlink = async (id: string, receiverId: string) => {
     Alert.alert(
       "Confirm Unlink",
-      "Are you sure you want to unlink this parent?",
+      "Are you sure you want to unlink this student?",
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -53,7 +53,7 @@ const LinkedParent = () => {
           style: "destructive",
           onPress: async () => {
             dispatch({
-              process: async ({ add, serverTimestamp, remove, get, where }) => {
+              process: async ({ add, remove, get, where, serverTimestamp }) => {
                 await remove("linkings", id);
 
                 add("notifications", {
@@ -61,10 +61,9 @@ const LinkedParent = () => {
                   title: "Linking Status",
                   message: `${user?.name} unlinked with you.`,
                   date: serverTimestamp(),
-                  route: "/linked-children",
+                  route: "/linked-parents",
                   prompt: false,
                 });
-
                 refresh({ get, where });
               },
               onError: (error) => {
@@ -80,7 +79,7 @@ const LinkedParent = () => {
   const onAccept = async (id: string, receiverId: string) => {
     Alert.alert(
       "Confirmation",
-      "Are you sure you want to accept this parent?",
+      "Are you sure you want to accept this student?",
       [
         { text: "No", style: "cancel" },
         {
@@ -96,7 +95,7 @@ const LinkedParent = () => {
                   title: "Linking Status",
                   message: `${user?.name} accepted your link request.`,
                   date: serverTimestamp(),
-                  route: "/linked-children",
+                  route: "/linked-parents",
                   prompt: false,
                 });
 
@@ -115,7 +114,7 @@ const LinkedParent = () => {
   const onDecline = async (id: string, receiverId: string) => {
     Alert.alert(
       "Confirmation",
-      "Are you sure you want to decline this parent?",
+      "Are you sure you want to decline this child?",
       [
         { text: "No", style: "cancel" },
         {
@@ -129,12 +128,11 @@ const LinkedParent = () => {
                 add("notifications", {
                   receiverId: receiverId,
                   title: "Linking Status",
-                  message: `${user?.name} declined your link request.`,
+                  message: `${user?.name} declined your linking request.`,
+                  route: "/linked-parents",
                   date: serverTimestamp(),
-                  route: "/linked-children",
                   prompt: false,
                 });
-
                 refresh({ get, where });
               },
               onError: (error) => {
@@ -155,9 +153,11 @@ const LinkedParent = () => {
 
         <TouchableOpacity
           style={tw`py-1 px-3 rounded-md bg-blue-600 mb-3`}
-          onPress={() => router.navigate("/parents-list")}
+          onPress={() => router.navigate("/students-list")}
         >
-          <Text style={tw`text-white text-base font-semibold`}>Add Parent</Text>
+          <Text style={tw`text-white text-base font-semibold`}>
+            Add Student
+          </Text>
         </TouchableOpacity>
 
         {fetchLoading ? (
@@ -166,24 +166,22 @@ const LinkedParent = () => {
             color="#5394F2"
             style={styles.loader}
           />
-        ) : linkedParents.length > 0 ? (
-          linkedParents.map((linking: any) => (
+        ) : linkedChilds.length > 0 ? (
+          linkedChilds.map((linking: any) => (
             <View key={linking.id} style={styles.parentCard}>
               <View style={styles.parentHeader}>
                 <Image
                   source={
-                    linking.parentImage
-                      ? { uri: linking.parentImage }
+                    linking.studentImage
+                      ? { uri: linking.studentImage }
                       : require("@/assets/images/account_circle.png")
                   }
                   style={styles.parentAvatar}
                 />
-                <Text style={styles.parentName}>{linking.parentName}</Text>
+                <Text style={styles.parentName}>{linking.studentName}</Text>
               </View>
-              <Text style={styles.parentInfo}>📧 {linking.parentEmail}</Text>
-              <Text style={styles.parentInfo}>
-                📞 {linking.parentContactNumber || "N/A"}
-              </Text>
+              <Text style={styles.parentInfo}>📧 {linking.studentEmail}</Text>
+              <Text style={styles.parentInfo}>{linking.parentIdNumber}</Text>
 
               {linking.status == "Declined" ? (
                 <Text
@@ -191,7 +189,7 @@ const LinkedParent = () => {
                 >
                   Declined
                 </Text>
-              ) : linking.requestByStudent && linking.status == "Pending" ? (
+              ) : !linking.requestByStudent && linking.status == "Pending" ? (
                 <Text
                   style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-yellow-400 text-yellow-400`}
                 >
@@ -201,7 +199,7 @@ const LinkedParent = () => {
                 <View style={tw`w-full mt-4 flex-row justify-center`}>
                   <TouchableOpacity
                     style={tw`bg-blue-700 rounded-md px-4 py-1 mr-2`}
-                    onPress={() => onAccept(linking.id, linking.parentId)}
+                    onPress={() => onAccept(linking.id, linking.studentId)}
                   >
                     <Text style={tw`text-white text-base font-semibold`}>
                       Accept
@@ -209,7 +207,7 @@ const LinkedParent = () => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={tw`bg-red-700 rounded-md px-4 py-1`}
-                    onPress={() => onDecline(linking.id, linking.parentId)}
+                    onPress={() => onDecline(linking.id, linking.studentId)}
                   >
                     <Text style={tw`text-white text-base font-semibold`}>
                       Decline
@@ -219,15 +217,15 @@ const LinkedParent = () => {
               ) : (
                 <TouchableOpacity
                   style={styles.unlinkButton}
-                  onPress={() => unlinkParent(linking.id, linking.parentId)}
+                  onPress={() => unlink(linking.id, linking.studentId)}
                 >
-                  <Text style={styles.unlinkText}>Unlink Parent</Text>
+                  <Text style={styles.unlinkText}>Unlink Student</Text>
                 </TouchableOpacity>
               )}
             </View>
           ))
         ) : (
-          <Text style={styles.noResults}>No linked parents found</Text>
+          <Text style={styles.noResults}>No linked students found</Text>
         )}
       </ScrollView>
     </View>
@@ -293,4 +291,4 @@ const styles = StyleSheet.create({
   noResults: { fontSize: 16, color: "#999", marginTop: 20 },
 });
 
-export default LinkedParent;
+export default Linked;

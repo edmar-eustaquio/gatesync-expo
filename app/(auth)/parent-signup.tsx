@@ -4,7 +4,10 @@ import useFirebaseHook from "@/hooks/useFirebaseHook";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import React, { useState } from "react";
 import {
   Alert,
@@ -69,7 +72,7 @@ export default function StudentSignup() {
 
         // Step 2: Send a verification email
         // if (user) {
-        //     await sendEmailVerification(user);
+        await sendEmailVerification(user);
         //     Alert.alert('Verification Email Sent', 'Please check your inbox to verify your email address.');
         // }
 
@@ -137,7 +140,9 @@ export default function StudentSignup() {
             style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
             placeholder="Enter contact number"
             value={contactNumber}
-            onChangeText={(text) => setContactNumber(text.replace(/[^0-9]/g, ''))} // Allow only numbers
+            onChangeText={(text) =>
+              setContactNumber(text.replace(/[^0-9]/g, ""))
+            } // Allow only numbers
             keyboardType="numeric"
             placeholderTextColor={"#686D76"}
           />

@@ -19,9 +19,7 @@ const ProfileScreen = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState(user?.name);
-  const [course, setCourse] = useState(user?.course);
-  const [idNumber, setIdNumber] = useState(user?.idNumber);
-  const [yearLevel, setYearLevel] = useState(user?.yearLevel);
+  const [contactNumber, setContactNumber] = useState(user?.contactNumber);
   const [email] = useState(user?.email);
 
   const { isLoading, dispatch } = useFirebaseHook();
@@ -33,17 +31,13 @@ const ProfileScreen = () => {
 
         await update("users", user?.id, {
           name: name,
-          course: course,
-          idNumber: idNumber,
-          yearLevel: yearLevel,
+          contactNumber: contactNumber,
         });
 
         setUser({
           id: user?.id,
           name: name,
-          course: course,
-          idNumber: idNumber,
-          yearLevel: yearLevel,
+          contactNumber: contactNumber,
           email: email,
           image: user?.image,
         });
@@ -106,14 +100,8 @@ const ProfileScreen = () => {
         <Text style={styles.infolabel}>NAME:</Text>
         <Text style={styles.username}>{name}</Text>
 
-        <Text style={styles.infolabel}>COURSE:</Text>
-        <Text style={styles.course}>{course}</Text>
-
-        <Text style={styles.infolabel}>ID NUMBER:</Text>
-        <Text style={styles.infoid}>{idNumber}</Text>
-
-        <Text style={styles.infolabel}>YEAR LEVEL:</Text>
-        <Text style={styles.infolevel}>{yearLevel}</Text>
+        <Text style={styles.infolabel}>CONTACT:</Text>
+        <Text style={styles.username}>{contactNumber}</Text>
 
         <Text style={styles.infolabel}>EMAIL:</Text>
         <Text style={styles.infomail}>{email}</Text>
@@ -146,20 +134,11 @@ const ProfileScreen = () => {
             <TextInput
               style={styles.input}
               placeholder="Course"
-              value={course}
-              onChangeText={setCourse}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="ID Number"
-              value={idNumber}
-              onChangeText={setIdNumber}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Year Level"
-              value={yearLevel}
-              onChangeText={setYearLevel}
+              value={contactNumber}
+              onChangeText={(text) =>
+                setContactNumber(text.replace(/[^0-9]/g, ""))
+              } // Allow only numbers
+              keyboardType="numeric"
             />
 
             <View style={styles.modalButtons}>
@@ -310,8 +289,8 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
-    paddingTop: 10,
     shadowRadius: 6,
+    paddingTop: 10,
     elevation: 5,
     height: 540,
     width: "90%",

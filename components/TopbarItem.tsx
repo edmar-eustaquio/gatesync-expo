@@ -8,8 +8,7 @@ export default function TopbarItem({
   text: string;
   onPress: () => void;
 }) {
-
-  const {setVisible} = useAppContext()
+  const { setVisible } = useAppContext();
 
   return (
     <TouchableOpacity
@@ -19,8 +18,8 @@ export default function TopbarItem({
         borderBottomColor: "#ddd",
       }}
       onPress={() => {
-        onPress()
-        setVisible(false)
+        onPress();
+        setVisible(false);
       }}
     >
       <Text

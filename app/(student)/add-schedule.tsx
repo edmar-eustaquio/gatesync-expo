@@ -55,7 +55,7 @@ const ScheduleScreen = () => {
 
   const handleSave = () =>
     dispatch({
-      process: async ({ add, serverTimestamp }) => {
+      process: async ({ get, where, add, serverTimestamp }) => {
         const scheduleData = {
           date: selectedDate,
           timeIn: timeIn.toLocaleTimeString([], {
@@ -68,9 +68,26 @@ const ScheduleScreen = () => {
           }),
           timestamp: serverTimestamp(),
           studentId: user?.id, // Updated field name
+          studentName: user?.name, // Updated field name
         };
 
         await add("schedules", scheduleData);
+
+        get(
+          "linkings",
+          where("studentId", "==", user?.id),
+          where("status", "==", "Accepted")
+        ).then(({ docs }) => {
+          for (const dc of docs) {
+            add("notifications", {
+              receiverId: dc.data().parentId,
+              title: "Schedule Status",
+              message: `Added new schedule.`,
+              date: serverTimestamp(),
+              prompt: false,
+            });
+          }
+        });
 
         Alert.alert("Success", "Schedule saved successfully.");
       },

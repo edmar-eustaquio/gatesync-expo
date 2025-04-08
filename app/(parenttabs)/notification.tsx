@@ -1,5 +1,5 @@
 import { useAppContext } from "@/AppProvider";
-import StudentTopBar from "@/components/StudentTopBar";
+import ParentTopBar from "@/components/ParentTopBar";
 import { db } from "@/firebase";
 import useScreenFocusHook from "@/hooks/useScreenFocusHook";
 import { router } from "expo-router";
@@ -56,7 +56,7 @@ const NotificationScreen = () => {
 
   return (
     <>
-      <StudentTopBar title="Messages" />
+      <ParentTopBar title="Messages" />
 
       <View style={styles.box} />
       <Image

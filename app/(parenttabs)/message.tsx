@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { useAppContext } from "@/AppProvider";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
-import StudentTopBar from "@/components/StudentTopBar";
 import {
   collection,
   onSnapshot,
@@ -17,6 +17,10 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
+import ParentTopBar from "@/components/ParentTopBar";
+import useScreenFocusHook from "@/hooks/useScreenFocusHook";
+import tw from "tailwind-react-native-classnames";
+import { router } from "expo-router";
 
 const MessageScreen = () => {
   const [chatUsers, setChatUsers] = useState<{ [field: string]: any }[]>([]);
@@ -25,20 +29,22 @@ const MessageScreen = () => {
   const { user } = useAppContext();
   const { isLoading, dispatch } = useFirebaseHook();
 
-  useEffect(() => {
+  useScreenFocusHook(() => {
     let unsubscribe: any = null;
     dispatch({
       process: async ({ get, where }) => {
-        const snap = await get("linkings", where("studentId", "==", user?.id));
+        const snap = await get(
+          "linkings",
+          where("parentId", "==", user?.id),
+          where("status", "==", "Accepted")
+        );
 
         let temp = [];
         for (const parentLinkedDoc of snap.docs) {
-          const linkedParentData: {[field: string]: any} = {
+          const linkedParentData: { [field: string]: any } = {
             id: parentLinkedDoc.id,
-            ...parentLinkedDoc.data()
+            ...parentLinkedDoc.data(),
           };
-
-          if (linkedParentData.status !== "accepted") continue;
 
           temp.push(linkedParentData);
         }
@@ -49,24 +55,27 @@ const MessageScreen = () => {
           query(
             collection(db, "messages"),
             where("participants", "array-contains", user?.id),
-            orderBy("date", 'desc')
+            orderBy("date", "desc")
           ),
-          (querySnapshot: {[field:string]:any}) => {
-            let h:{[field:string]:any} = {}
-            for (const j of querySnapshot.docs){
+          (querySnapshot: { [field: string]: any }) => {
+            let h: { [field: string]: any } = {};
+            for (const dc of querySnapshot.docs) {
+              const j = dc.data();
               if (h[j.participants[0]] || h[j.participants[1]]) continue;
 
-              for (const l of temp){
-                if (j.participants.includes(l.id)) {
-                  h[l.id] = l.id
-                  l.message = j.message
-                  l.date = j.date
+              for (let i = 0; i < temp.length; i++) {
+                const l = temp[i];
+                if (j.participants.includes(l.studentId)) {
+                  h[l.studentId] = true;
+                  temp[i].message = j.message;
                   break;
                 }
               }
             }
 
-            if (!loaded) setLoaded(true)
+            setChatUsers([...temp]);
+
+            if (!loaded) setLoaded(true);
           }
         );
       },
@@ -77,12 +86,12 @@ const MessageScreen = () => {
 
     return () => {
       if (unsubscribe) unsubscribe();
-    }
-  }, []);
+    };
+  });
 
   return (
     <>
-      <StudentTopBar title="Messages" />
+      <ParentTopBar title="Messages" />
 
       <ScrollView style={styles.container}>
         <Text style={styles.welcomeText}>Messages</Text>
@@ -96,19 +105,36 @@ const MessageScreen = () => {
               chatUsers.map((value, index) => (
                 <TouchableOpacity
                   key={index}
-                  onPress={
-                    () => {}
-                    // router.navigate("ChatPage", { user: value })
-                  }
+                  onPress={() => {
+                    router.push({
+                      pathname: "/chats",
+                      params: {
+                        otherUserId: value.studentId,
+                        otherUserName: value.studentName,
+                        otherUserImage: value.studentImage,
+                      },
+                    });
+                  }}
                 >
-                  <View style={styles.parentItem}>
-                    <Text style={styles.parentName}>{value.name}</Text>
-                    {/* Display the latest message for each chat */}
-                    <Text style={styles.latestMessage}>
-                      {value.message ?? "No message yet."}
-                      {/* {messages[`${value.id}_${user?.id}`] &&
-                        messages[`${value.id}_${user?.id}`].slice(-1)[0]?.text} */}
-                    </Text>
+                  <View
+                    style={tw`flex-row rounded-lg bg-white shadow-lg mb-4 px-4 py-2 items-center`}
+                  >
+                    <Image
+                      source={
+                        value.studentImage
+                          ? { uri: value.studentImage }
+                          : require("@/assets/images/account_circle.png")
+                      }
+                      style={tw`w-14 h-14 rounded-full`}
+                    />
+                    <View>
+                      <Text style={tw`text-lg font-bold ml-4`}>
+                        {value.studentName}
+                      </Text>
+                      <Text style={tw`ml-4`}>
+                        {value.message ?? "No messages yet."}
+                      </Text>
+                    </View>
                   </View>
                 </TouchableOpacity>
               ))

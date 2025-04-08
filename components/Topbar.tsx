@@ -19,7 +19,7 @@ export default function Topbar({
   title?: string;
   setSidebarVisible: (vis: boolean) => void;
 }) {
-  const {visible, setVisible} = useAppContext();
+  const { visible, setVisible } = useAppContext();
 
   return (
     <>
@@ -57,7 +57,7 @@ export default function Topbar({
           <MaterialIcons size={20} name="menu" />
         </TouchableOpacity>
         {title ? <Text>{title}</Text> : null}
-        <TouchableOpacity onPress={() => setVisible(true)}>
+        <TouchableOpacity onPress={() => setVisible(!visible)}>
           <MaterialIcons size={20} name="more-vert" />
         </TouchableOpacity>
       </View>
@@ -68,6 +68,10 @@ export default function Topbar({
         transparent={true}
         onRequestClose={() => setVisible(false)}
       >
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={() => setVisible(false)}
+        />
         <View
           style={{
             position: "absolute",
