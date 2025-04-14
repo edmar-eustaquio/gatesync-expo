@@ -10,16 +10,17 @@ import { Image, View } from "react-native";
 export default function Index() {
   const router = useRouter();
   const rootNavigationState = useRootNavigationState();
-  const { setUser, pendingRoute, setPendingRoute } = useAppContext();
+  // const { setUser, pendingRoute, setPendingRoute } = useAppContext();
+  const { setUser } = useAppContext();
 
   useEffect(() => {
     if (!rootNavigationState?.key) return;
 
-    if (pendingRoute) {
-      router.replace(pendingRoute);
-      setPendingRoute(null);
-      return;
-    }
+    // if (pendingRoute) {
+    //   router.replace(pendingRoute);
+    //   setPendingRoute(null);
+    //   return;
+    // }
 
     const check = async () => {
       try {

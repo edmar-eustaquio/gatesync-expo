@@ -23,6 +23,7 @@ import {
   orderBy,
   addDoc,
   serverTimestamp,
+  where,
 } from "firebase/firestore";
 import { router, useLocalSearchParams } from "expo-router";
 import { useAppContext } from "@/AppProvider";
@@ -42,16 +43,25 @@ const ChatPage = () => {
   const scrollViewRef = useRef<any>(null);
 
   useEffect(() => {
-    const messagesRef = collection(db, "messages");
+    const messagesRef = query(
+      collection(db, "messages"),
+      where("participants", "array-contains", user?.id)
+    );
     const q = query(messagesRef, orderBy("date", "asc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      setMessages(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-      );
+      let temp = [];
+      for (const doc of querySnapshot.docs) {
+        const message = doc.data();
+
+        if (message.participants.includes(otherUserId)) {
+          temp.push({
+            id: doc.id,
+            ...message,
+          });
+        }
+      }
+      setMessages(temp);
     });
 
     return () => unsubscribe(); // Unsubscribe when component unmounts

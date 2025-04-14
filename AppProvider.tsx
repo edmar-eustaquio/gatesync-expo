@@ -9,7 +9,7 @@ import {
 } from "react";
 import { db } from "./firebase";
 import * as Notifications from "expo-notifications";
-import { Href } from "expo-router";
+import { Href, router } from "expo-router";
 import { update } from "./hooks/useFirebaseHook";
 
 type UserProps = {
@@ -30,15 +30,15 @@ const AppContext = createContext<{
   setUser: React.Dispatch<React.SetStateAction<UserProps | null>>;
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  pendingRoute: Href | null;
-  setPendingRoute: React.Dispatch<React.SetStateAction<Href | null>>;
+  // pendingRoute: Href | null;
+  // setPendingRoute: React.Dispatch<React.SetStateAction<Href | null>>;
 }>({
   user: null,
   setUser: () => {},
   visible: false,
   setVisible: () => {},
-  pendingRoute: null,
-  setPendingRoute: () => {},
+  // pendingRoute: null,
+  // setPendingRoute: () => {},
 });
 
 export const useAppContext = () => {
@@ -54,7 +54,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const notifRef = useRef<any>(null);
   const notifClickListenerRef = useRef<any>(null);
-  const [pendingRoute, setPendingRoute] = useState<Href | null>(null);
+  // const [pendingRoute, setPendingRoute] = useState<Href | null>(null);
 
   useEffect(() => {
     async function requestPermissions() {
@@ -99,7 +99,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
         if (!path) return;
 
-        setPendingRoute(path);
+        router.push(path);
+        // setPendingRoute(path);
       });
 
     notifRef.current = onSnapshot(
@@ -143,8 +144,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setUser,
         visible,
         setVisible,
-        pendingRoute,
-        setPendingRoute,
+        // pendingRoute,
+        // setPendingRoute,
       }}
     >
       {children}
