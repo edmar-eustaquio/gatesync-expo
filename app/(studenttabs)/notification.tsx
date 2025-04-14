@@ -22,6 +22,8 @@ import {
   Animated,
   StatusBar,
   ActivityIndicator,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import tw from "tailwind-react-native-classnames";
 
@@ -55,7 +57,12 @@ const NotificationScreen = () => {
   });
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <StudentTopBar title="Notifications" />
 
       <View style={styles.box} />
@@ -70,7 +77,7 @@ const NotificationScreen = () => {
           fontFamily: "MartianMono-Regular",
           color: "#fff",
           fontWeight: "800",
-          top: 120,
+          top: 160,
           left: 40,
         }}
       >
@@ -83,7 +90,7 @@ const NotificationScreen = () => {
           fontFamily: "MartianMono-Regular",
           color: "#fff",
           fontWeight: "800",
-          top: 150,
+          top: 190,
           left: 40,
         }}
       >
@@ -92,7 +99,10 @@ const NotificationScreen = () => {
 
       <View style={{ height: 180 }} />
 
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      >
         {/* <LinearGradient colors={['#6B9BFA', '#0056FF']} style={styles.notif} /> */}
 
         {!loaded ? (
@@ -118,7 +128,7 @@ const NotificationScreen = () => {
           ))
         )}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 
@@ -130,7 +140,7 @@ const styles = StyleSheet.create({
   },
   box: {
     position: "absolute",
-    top: 80,
+    top: 120,
     right: 15,
     left: 15,
     borderRadius: 18,
@@ -139,7 +149,7 @@ const styles = StyleSheet.create({
   },
   notificon: {
     position: "absolute",
-    top: 40,
+    top: 80,
     right: 25,
     width: 150,
     height: 160,

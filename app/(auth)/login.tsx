@@ -19,6 +19,7 @@ import useFirebaseHook from "@/hooks/useFirebaseHook";
 import { useAppContext } from "@/AppProvider";
 import LoadingWrapper from "@/components/LoadingWrapper";
 // import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -39,11 +40,11 @@ export default function Login() {
         // Ensure Firebase Auth is correctly referenced
         const cred = await signInWithEmailAndPassword(auth, email, password);
 
-        // if (!cred.user.emailVerified) {
-        //   await auth.signOut();
-        //   Alert.alert("Error", "Email not verified!!!");
-        //   return;
-        // }
+        if (!cred.user.emailVerified) {
+          await auth.signOut();
+          Alert.alert("Error", "Email not verified!!!");
+          return;
+        }
 
         const userDoc = await find("users", cred.user.uid);
 
@@ -53,19 +54,24 @@ export default function Login() {
           return;
         }
 
+        AsyncStorage.setItem("email", email);
+        AsyncStorage.setItem("password", password);
+
         setUser({
           id: cred.user.uid,
           ...userData,
         });
         router.replace(
-          userData.role == "Student" ? "/(studenttabs)" : "/(parenttabs)"
+          userData.role == "Student"
+            ? "/(studenttabs)/home"
+            : "/(parenttabs)/home"
         );
       },
       onError: (error) => {
         console.error("Error logging in:", error);
 
         let errorMessage = "";
-        
+
         if (error.includes("auth/invalid-email"))
           errorMessage = "Invalid email address";
         else if (error.includes("auth/user-not-found"))
@@ -74,6 +80,8 @@ export default function Login() {
           errorMessage = "Incorrect password";
         else if (error.includes("auth/too-many-requests"))
           errorMessage = "Too many failed attempts. Please try again later";
+        else if (error.includes("auth/invalid-credential"))
+          errorMessage = "Incorrect credentials";
         else errorMessage = error;
 
         Alert.alert("Error", errorMessage);

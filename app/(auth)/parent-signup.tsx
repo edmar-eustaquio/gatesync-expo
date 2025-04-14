@@ -15,7 +15,9 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
+  SafeAreaView,
   ScrollView,
+  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
@@ -98,14 +100,20 @@ export default function StudentSignup() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={tw`flex-1 p-4 justify-center`}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
     >
-      <ScrollView
-        contentContainerStyle={tw`flex-1 justify-center items-center`}
+      <KeyboardAvoidingView
+        style={tw`flex-1 p-4 justify-center`}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {/* <View
+        <ScrollView
+          contentContainerStyle={tw`flex-1 justify-center items-center`}
+        >
+          {/* <View
           style={{
             position: "absolute",
             width: 550,
@@ -116,171 +124,172 @@ export default function StudentSignup() {
             left: 40,
           }}
         /> */}
-        <View style={tw`w-full flex-row justify-between`}>
-          <MaterialIcons
-            name="arrow-back"
-            size={35}
-            onPress={() => router.back()}
-          />
-          <Text style={tw`text-3xl font-bold`}>Parent Signup</Text>
-          <View style={{ width: 35 }}></View>
-        </View>
-
-        <View style={tw`w-full bg-white rounded-lg mt-4 p-5 shadow-lg`}>
-          <Text style={tw`text-base`}>Name</Text>
-          <TextInput
-            style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
-            placeholder="Enter name"
-            value={name}
-            onChangeText={setUsername}
-            placeholderTextColor={"#686D76"}
-          />
-          <Text style={tw`text-base`}>Contact Number</Text>
-          <TextInput
-            style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
-            placeholder="Enter contact number"
-            value={contactNumber}
-            onChangeText={(text) =>
-              setContactNumber(text.replace(/[^0-9]/g, ""))
-            } // Allow only numbers
-            keyboardType="numeric"
-            placeholderTextColor={"#686D76"}
-          />
-          <Text style={tw`text-base`}>Email</Text>
-          <TextInput
-            style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
-            placeholder="Enter email"
-            value={email}
-            onChangeText={setEmail}
-            placeholderTextColor={"#686D76"}
-          />
-          <Text style={tw`text-base`}>Password</Text>
-          <View style={tw`flex-row items-center`}>
-            <TextInput
-              style={tw`flex-1 p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
-              placeholder="Enter password"
-              secureTextEntry={!passwordVisible} // Corrected
-              value={password}
-              onChangeText={setPassword}
-              placeholderTextColor={"#686D76"}
+          <View style={tw`w-full flex-row justify-between`}>
+            <MaterialIcons
+              name="arrow-back"
+              size={35}
+              onPress={() => router.back()}
             />
-
-            <TouchableOpacity
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={tw`p-2 absolute right-2`}
-            >
-              <Image
-                source={
-                  passwordVisible
-                    ? require("@/assets/images/visible.png") // Eye open
-                    : require("@/assets/images/eye.png") // Eye closed
-                }
-                style={{ width: 24, height: 24, tintColor: "gray" }}
-              />
-            </TouchableOpacity>
+            <Text style={tw`text-3xl font-bold`}>Parent Signup</Text>
+            <View style={{ width: 35 }}></View>
           </View>
 
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#000",
-              width: "100%",
-              height: 43,
-              marginTop: 10,
-              borderRadius: 8,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={handleSignup}
-          >
-            <LoadingWrapper loading={isLoading}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "#fff",
-                  fontWeight: "bold",
-                }}
-              >
-                Sign up
-              </Text>
-            </LoadingWrapper>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              width: "80%",
-              backgroundColor: "#fff",
-              padding: 20,
-              borderRadius: 10,
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={require("@/assets/images/Check.png")} // Replace with your custom image
-              style={{
-                width: 50,
-                height: 50,
-              }}
+          <View style={tw`w-full bg-white rounded-lg mt-4 p-5 shadow-lg`}>
+            <Text style={tw`text-base`}>Name</Text>
+            <TextInput
+              style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
+              placeholder="Enter name"
+              value={name}
+              onChangeText={setUsername}
+              placeholderTextColor={"#686D76"}
             />
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                marginTop: 20,
-              }}
-            >
-              Registration Successful!
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                textAlign: "center",
-                marginVertical: 10,
-              }}
-            >
-              Welcome, {name}! You have successfully registered.
-            </Text>
+            <Text style={tw`text-base`}>Contact Number</Text>
+            <TextInput
+              style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
+              placeholder="Enter contact number"
+              value={contactNumber}
+              onChangeText={(text) =>
+                setContactNumber(text.replace(/[^0-9]/g, ""))
+              } // Allow only numbers
+              keyboardType="numeric"
+              placeholderTextColor={"#686D76"}
+            />
+            <Text style={tw`text-base`}>Email</Text>
+            <TextInput
+              style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
+              placeholder="Enter email"
+              value={email}
+              onChangeText={setEmail}
+              placeholderTextColor={"#686D76"}
+            />
+            <Text style={tw`text-base`}>Password</Text>
+            <View style={tw`flex-row items-center`}>
+              <TextInput
+                style={tw`flex-1 p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
+                placeholder="Enter password"
+                secureTextEntry={!passwordVisible} // Corrected
+                value={password}
+                onChangeText={setPassword}
+                placeholderTextColor={"#686D76"}
+              />
+
+              <TouchableOpacity
+                onPress={() => setPasswordVisible(!passwordVisible)}
+                style={tw`p-2 absolute right-2`}
+              >
+                <Image
+                  source={
+                    passwordVisible
+                      ? require("@/assets/images/visible.png") // Eye open
+                      : require("@/assets/images/eye.png") // Eye closed
+                  }
+                  style={{ width: 24, height: 24, tintColor: "gray" }}
+                />
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
               style={{
                 backgroundColor: "#000",
-                paddingVertical: 10,
-                paddingHorizontal: 20,
+                width: "100%",
+                height: 43,
+                marginTop: 10,
                 borderRadius: 8,
-                marginTop: 20,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              onPress={() => {
-                setModalVisible(false);
-                router.navigate("/login");
-              }}
+              onPress={handleSignup}
             >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                }}
-              >
-                Go to Login
-              </Text>
+              <LoadingWrapper loading={isLoading}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: "#fff",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Sign up
+                </Text>
+              </LoadingWrapper>
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-    </KeyboardAvoidingView>
+        </ScrollView>
+
+        <Modal
+          visible={isModalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: "80%",
+                backgroundColor: "#fff",
+                padding: 20,
+                borderRadius: 10,
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("@/assets/images/Check.png")} // Replace with your custom image
+                style={{
+                  width: 50,
+                  height: 50,
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginTop: 20,
+                }}
+              >
+                Registration Successful!
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  textAlign: "center",
+                  marginVertical: 10,
+                }}
+              >
+                Welcome, {name}! You have successfully registered.
+              </Text>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#000",
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  borderRadius: 8,
+                  marginTop: 20,
+                }}
+                onPress={() => {
+                  setModalVisible(false);
+                  router.navigate("/login");
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 16,
+                  }}
+                >
+                  Go to Login
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

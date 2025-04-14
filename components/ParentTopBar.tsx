@@ -8,6 +8,7 @@ import useFirebaseHook from "@/hooks/useFirebaseHook";
 import { useAppContext } from "@/AppProvider";
 import { auth } from "@/firebase";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ParentTopBar({ title }: { title: string }) {
   const [visible, setVisible] = useState(false);
@@ -19,6 +20,12 @@ export default function ParentTopBar({ title }: { title: string }) {
     dispatch({
       process: async ({}) => {
         await auth.signOut();
+
+        try {
+          AsyncStorage.removeItem("email");
+          AsyncStorage.removeItem("password");
+        } catch (e) {}
+
         setUser(null);
         router.replace("/login");
       },

@@ -5,6 +5,9 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 
 import { router } from "expo-router";
@@ -12,7 +15,12 @@ import StudentTopBar from "@/components/StudentTopBar";
 
 export default function HomeScreen() {
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <StudentTopBar title="Home" />
 
       <ScrollView style={styles.container}>
@@ -106,7 +114,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({

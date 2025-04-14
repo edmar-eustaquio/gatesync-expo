@@ -10,6 +10,9 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 
 const MyscheduleScreen = () => {
@@ -68,7 +71,12 @@ const MyscheduleScreen = () => {
   );
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <CustomTopbar title="My Schedules" />
 
       <FlatList
@@ -80,7 +88,7 @@ const MyscheduleScreen = () => {
         ListFooterComponent={isLoading ? <Text>Loading...</Text> : null}
         contentContainerStyle={styles.flatListContent}
       />
-    </>
+    </SafeAreaView>
   );
 };
 

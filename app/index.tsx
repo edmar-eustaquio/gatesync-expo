@@ -1,43 +1,80 @@
 import { useAppContext } from "@/AppProvider";
 import { useRootNavigationState, useRouter } from "expo-router";
 import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "@/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { Image, View } from "react-native";
 
-export default function index() {
+export default function Index() {
   const router = useRouter();
   const rootNavigationState = useRootNavigationState();
-
-  const { setUser } = useAppContext();
+  const { setUser, pendingRoute, setPendingRoute } = useAppContext();
 
   useEffect(() => {
-    if (rootNavigationState?.key) {
-      // Only navigate when the root layout is mounted
+    if (!rootNavigationState?.key) return;
 
-      // setUser({
-      //   id: "WeAY6WsXAFZ0lXH6AvljhYjyUyF2",
-      //   name: "Parent",
-      //   email: "p@gmail.com",
-      //   contactNumber: "09454845588",
-      //   image:
-      //     "https://res.cloudinary.com/diwwrxy8b/image/upload/v1744080315/nd48xwzob3v594v2wnha.jpg",
-      // });
-      // router.replace("/(parenttabs)");
-
-      // setUser({
-      //   id: "P9DJlaa7fJanvWTUJfnGphIsXbd2",
-      //   name: "Student",
-      //   email: "s@gmail.com",
-      //   idNumber: "5155",
-      //   course: "BSIT",
-      //   role: "Student",
-      //   yearLevel: "8484",
-      //   qrData: "Student-5155",
-      //   image:
-      //     "https://res.cloudinary.com/diwwrxy8b/image/upload/v1744038332/bwzd5vt0wpb8b8vyjcd1.jpg",
-      // });
-      // router.replace("/(studenttabs)");
-
-      router.replace("/login");
+    if (pendingRoute) {
+      router.replace(pendingRoute);
+      setPendingRoute(null);
+      return;
     }
+
+    const check = async () => {
+      try {
+        const email = await AsyncStorage.getItem("email");
+        const password = await AsyncStorage.getItem("password");
+
+        if (!email || !password) {
+          router.replace("/login");
+          return;
+        }
+
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+        const userData: any = userDoc.data();
+
+        setUser({
+          id: userCredential.user.uid,
+          ...userData,
+        });
+
+        router.replace(
+          `/(${userData.role === "Parent" ? "parent" : "student"}tabs)/home`
+        );
+      } catch (e) {
+        console.error("Auto login failed:", e);
+        await AsyncStorage.removeItem("email");
+        await AsyncStorage.removeItem("password");
+        router.replace("/login");
+      }
+    };
+
+    check();
   }, [rootNavigationState]);
-  return null;
+
+  return (
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Image
+        source={require("@/assets/images/logo.png")}
+        style={{
+          width: 150,
+          height: 150,
+        }}
+      />
+    </View>
+  );
 }

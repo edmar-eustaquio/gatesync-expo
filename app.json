@@ -1,12 +1,13 @@
 {
   "expo": {
     "name": "GateSync",
-    "slug": "gatesync",
+    "slug": "gatesyncv2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "deepLinking": true,
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -43,7 +44,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "8456e937-11fa-41d6-917c-b02bc0318a20"
+        "projectId": "d86db3f2-8714-4cef-9737-11cf4bc8ac17"
       }
     },
     "owner": "juniorprogrammer"

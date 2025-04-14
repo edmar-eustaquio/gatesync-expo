@@ -4,7 +4,10 @@ import useFirebaseHook from "@/hooks/useFirebaseHook";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Platform,
+  SafeAreaView,
   ScrollView,
+  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
@@ -96,7 +99,12 @@ export default function ParentsList() {
   };
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <CustomTopbar title="Parent Lists" />
 
       <View style={tw`p-3`}>
@@ -135,6 +143,6 @@ export default function ParentsList() {
           </Text>
         )}
       </View>
-    </>
+    </SafeAreaView>
   );
 }

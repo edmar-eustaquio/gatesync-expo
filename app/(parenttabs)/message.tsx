@@ -6,6 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 import { useAppContext } from "@/AppProvider";
 import useFirebaseHook, { removeSeenNotifs } from "@/hooks/useFirebaseHook";
@@ -91,7 +94,12 @@ const MessageScreen = () => {
   });
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <ParentTopBar title="Messages" />
 
       <ScrollView style={styles.container}>
@@ -145,7 +153,7 @@ const MessageScreen = () => {
           </View>
         )}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 

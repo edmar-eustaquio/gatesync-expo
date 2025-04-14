@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 import { useAppContext } from "@/AppProvider";
 import useFirebaseHook, { removeSeenNotifs } from "@/hooks/useFirebaseHook";
@@ -159,7 +162,12 @@ const LinkedParent = () => {
   };
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <CustomTopbar title="Linked Parents" />
 
       <View style={styles.container}>
@@ -247,7 +255,7 @@ const LinkedParent = () => {
           )}
         </ScrollView>
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 

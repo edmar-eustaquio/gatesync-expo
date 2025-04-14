@@ -13,6 +13,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Alert,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
 import {
   collection,
@@ -74,6 +76,7 @@ const ChatPage = () => {
           receiverId: otherUserId,
           title: "Message",
           message: `${user?.name} sent you a message.`,
+          // route: "/message",
           route: `/(${
             user?.role == "Student" ? "parent" : "student"
           }tabs)/message`,
@@ -88,15 +91,20 @@ const ChatPage = () => {
   };
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <CustomTopbar title={otherUserName || "Unknown User"} />
 
       <View style={styles.container}>
         {/* Dismiss keyboard when tapping outside */}
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={{ flex: 1, padding: 10 }}>
-            {/* Navigation Bar */}
-            {/* <View style={styles.navbar}>
+        {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+        <View style={{ flex: 1, padding: 10 }}>
+          {/* Navigation Bar */}
+          {/* <View style={styles.navbar}>
               <TouchableOpacity onPress={() => router.back()}>
                 <Image
                   source={require("@/assets/images/back.png")}
@@ -114,30 +122,30 @@ const ChatPage = () => {
               />
             </View> */}
 
-            <ScrollView
-              ref={scrollViewRef}
-              onContentSizeChange={() =>
-                scrollViewRef.current?.scrollToEnd({ animated: true })
-              }
-            >
-              {messages.map((item: any) => (
-                <View
-                  key={item.id}
-                  style={[
-                    styles.messageContainer,
-                    item.senderId === user?.id
-                      ? styles.sentMessage
-                      : styles.receivedMessage,
-                  ]}
-                >
-                  <Text style={styles.messageText}>{item.message}</Text>
-                </View>
-              ))}
-            </ScrollView>
+          <ScrollView
+            ref={scrollViewRef}
+            onContentSizeChange={() =>
+              scrollViewRef.current?.scrollToEnd({ animated: true })
+            }
+          >
+            {messages.map((item: any) => (
+              <View
+                key={item.id}
+                style={[
+                  styles.messageContainer,
+                  item.senderId === user?.id
+                    ? styles.sentMessage
+                    : styles.receivedMessage,
+                ]}
+              >
+                <Text style={styles.messageText}>{item.message}</Text>
+              </View>
+            ))}
+          </ScrollView>
 
-            {/* Chat messages list */}
-          </View>
-        </TouchableWithoutFeedback>
+          {/* Chat messages list */}
+        </View>
+        {/* </TouchableWithoutFeedback> */}
 
         {/* Message Input Section */}
         <KeyboardAvoidingView
@@ -158,7 +166,7 @@ const ChatPage = () => {
           </TouchableOpacity>
         </KeyboardAvoidingView>
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 

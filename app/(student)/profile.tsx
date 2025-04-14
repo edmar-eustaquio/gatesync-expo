@@ -13,6 +13,9 @@ import {
   Image,
   Modal,
   TextInput,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 
 const ProfileScreen = () => {
@@ -122,7 +125,12 @@ const ProfileScreen = () => {
   };
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <CustomTopbar title="Profile" />
 
       <View style={styles.container}>
@@ -215,7 +223,7 @@ const ProfileScreen = () => {
           </View>
         </Modal>
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 

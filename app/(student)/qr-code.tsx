@@ -9,6 +9,7 @@ import {
   Platform,
   AppState,
   Alert,
+  SafeAreaView,
 } from "react-native";
 // import LinearGradient from 'react-native-linear-gradient';
 import QRCode from "react-native-qrcode-svg";
@@ -77,7 +78,12 @@ export default function Qr() {
   }, []);
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <CustomTopbar title="QR Code" />
 
       <View style={styles.container}>
@@ -102,7 +108,7 @@ export default function Qr() {
 
       {/* Toast component */}
       {/* <Toast /> */}
-    </>
+    </SafeAreaView>
   );
 }
 

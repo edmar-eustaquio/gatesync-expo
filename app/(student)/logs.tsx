@@ -5,6 +5,9 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+  Platform,
 } from "react-native";
 import {
   onSnapshot,
@@ -56,7 +59,12 @@ const MessageScreen = () => {
   }, []); // Empty dependency array means this runs only once when the component mounts
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <CustomTopbar title="Activity Logs" />
 
       {/* Main ScrollView */}
@@ -80,7 +88,7 @@ const MessageScreen = () => {
           ))
         )}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 

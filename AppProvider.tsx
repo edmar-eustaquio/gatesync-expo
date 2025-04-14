@@ -7,10 +7,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { Platform, SafeAreaView, StatusBar } from "react-native";
 import { db } from "./firebase";
 import * as Notifications from "expo-notifications";
-import { router } from "expo-router";
+import { Href } from "expo-router";
 import { update } from "./hooks/useFirebaseHook";
 
 type UserProps = {
@@ -31,11 +30,15 @@ const AppContext = createContext<{
   setUser: React.Dispatch<React.SetStateAction<UserProps | null>>;
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  pendingRoute: Href | null;
+  setPendingRoute: React.Dispatch<React.SetStateAction<Href | null>>;
 }>({
   user: null,
   setUser: () => {},
   visible: false,
   setVisible: () => {},
+  pendingRoute: null,
+  setPendingRoute: () => {},
 });
 
 export const useAppContext = () => {
@@ -51,6 +54,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const notifRef = useRef<any>(null);
   const notifClickListenerRef = useRef<any>(null);
+  const [pendingRoute, setPendingRoute] = useState<Href | null>(null);
 
   useEffect(() => {
     async function requestPermissions() {
@@ -74,24 +78,28 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     return () => {
       if (notifRef.current) notifRef.current();
+      if (notifClickListenerRef.current) notifClickListenerRef.current.remove();
     };
   }, []);
 
   useEffect(() => {
     if (!user) {
-      if (notifRef.current) notifRef.current();
+      if (notifRef.current) notifRef.current(); // unsubscribe Firestore
+      if (notifClickListenerRef.current) notifClickListenerRef.current.remove();
       return;
     }
 
+    if (notifRef.current) notifRef.current(); // unsubscribe Firestore
+    if (notifClickListenerRef.current) notifClickListenerRef.current.remove(); // remove previous notification listener
+
+    // ✅ One-time listener for notification click
     notifClickListenerRef.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        if (!user) return;
-
         const path = response?.notification?.request?.content?.data?.route;
 
-        setTimeout(() => {
-          router.push(path);
-        }, 50);
+        if (!path) return;
+
+        setPendingRoute(path);
       });
 
     notifRef.current = onSnapshot(
@@ -100,10 +108,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         where("receiverId", "==", user.id),
         where("prompt", "==", false)
       ),
-      (snap: any) => {
+      (snap) => {
         for (const dc of snap.docs) {
           const notif = dc.data();
 
+          // Prevent duplicate prompt
           update("notifications", dc.id, { prompt: true });
 
           Notifications.scheduleNotificationAsync({
@@ -119,18 +128,26 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
       }
     );
+
+    return () => {
+      // ✅ Clean up listeners on unmount or user change
+      if (notifClickListenerRef.current) notifClickListenerRef.current.remove();
+      if (notifRef.current) notifRef.current();
+    };
   }, [user]);
 
   return (
-    <AppContext.Provider value={{ user, setUser, visible, setVisible }}>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-        }}
-      >
-        {children}
-      </SafeAreaView>
+    <AppContext.Provider
+      value={{
+        user,
+        setUser,
+        visible,
+        setVisible,
+        pendingRoute,
+        setPendingRoute,
+      }}
+    >
+      {children}
     </AppContext.Provider>
   );
 };

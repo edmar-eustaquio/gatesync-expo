@@ -24,6 +24,8 @@ import {
   ScrollView,
   BackHandler,
   Alert,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import tw from "tailwind-react-native-classnames";
 
@@ -69,7 +71,12 @@ const ParentHomeScreen = () => {
   });
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <ParentTopBar title="Home" />
 
       <View style={styles.container}>
@@ -136,7 +143,7 @@ const ParentHomeScreen = () => {
           </ScrollView>
         </View>
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 

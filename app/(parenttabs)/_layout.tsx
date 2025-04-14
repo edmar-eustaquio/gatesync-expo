@@ -8,23 +8,22 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/firebase";
 
 export default function TabLayout() {
-
-  const {user} = useAppContext()
-  const [count, setCount] = useState(0)
+  const { user } = useAppContext();
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const uns =  onSnapshot(
+    const uns = onSnapshot(
       query(
         collection(db, "notifications"),
         where("receiverId", "==", user?.id)
       ),
       (snap: any) => {
-        setCount(snap.docs.length)
+        setCount(snap.docs.length);
       }
     );
 
     return () => uns();
-  }, [])
+  }, []);
 
   return (
     <Tabs
@@ -35,7 +34,7 @@ export default function TabLayout() {
         tabBarIcon: ({ focused }) => {
           let imageSource;
 
-          if (route.name === "index") {
+          if (route.name === "home") {
             imageSource = focused
               ? require("@/assets/images/home(3).png") // Active image for Home
               : require("@/assets/images/home(2).png"); // Inactive image for Home
@@ -70,25 +69,27 @@ export default function TabLayout() {
                 }}
               />
               {/* Pending Count Badge */}
-              {route.name === 'notification' && count > 0 && (
-              <View
-                style={{
-                  position: 'absolute',
-                  top: -5,
-                  right: -5,
-                  backgroundColor: 'red',
-                  borderRadius: 10,
-                  width: 18,
-                  height: 18,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
-                  {count}
-                </Text>
-              </View>
-            )}
+              {route.name === "notification" && count > 0 && (
+                <View
+                  style={{
+                    position: "absolute",
+                    top: -5,
+                    right: -5,
+                    backgroundColor: "red",
+                    borderRadius: 10,
+                    width: 18,
+                    height: 18,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{ color: "white", fontSize: 12, fontWeight: "bold" }}
+                  >
+                    {count}
+                  </Text>
+                </View>
+              )}
             </View>
           );
         },

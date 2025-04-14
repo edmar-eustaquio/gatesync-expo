@@ -7,6 +7,9 @@ import {
   Image,
   TextInput,
   Alert,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 import { router } from "expo-router";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
@@ -62,6 +65,7 @@ export default function addEmergency() {
             add("notifications", {
               receiverId: dc.data().parentId,
               title: "Emergency Status",
+              route: "(parenttabs)/notification",
               message: `${user?.name} added emergency due to ${reason}.`,
               date: serverTimestamp(),
               prompt: false,
@@ -79,7 +83,12 @@ export default function addEmergency() {
   };
 
   return (
-    <>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <CustomTopbar title="Add Emergency" />
 
       <View style={styles.container}>
@@ -147,7 +156,7 @@ export default function addEmergency() {
           </LoadingWrapper>
         </TouchableOpacity>
       </View>
-    </>
+    </SafeAreaView>
   );
 }
 

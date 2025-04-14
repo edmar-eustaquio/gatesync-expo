@@ -6,6 +6,9 @@ import {
   StyleSheet,
   Image,
   Alert,
+  SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -82,6 +85,7 @@ const ScheduleScreen = () => {
           for (const dc of docs) {
             add("notifications", {
               receiverId: dc.data().parentId,
+              route: "(parenttabs)/notification",
               title: "Schedule Status",
               message: `Added new schedule.`,
               date: serverTimestamp(),
@@ -99,25 +103,31 @@ const ScheduleScreen = () => {
     });
 
   return (
-    <View style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <View style={styles.navbar}>
-          <TouchableOpacity onPress={() => router.back()}>
-            {/* <Image
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
+      <View style={styles.scrollContainer}>
+        <View style={styles.container}>
+          <View style={styles.navbar}>
+            <TouchableOpacity onPress={() => router.back()}>
+              {/* <Image
               source={require("@/assets/images/back.png")}
               style={styles.back}
             /> */}
-            <MaterialIcons
-              style={{ color: "#fff" }}
-              size={20}
-              name="arrow-back"
-            />
-          </TouchableOpacity>
-          <View style={styles.navCenter}>
-            <Text style={{ color: "#fff", fontSize: 17, fontWeight: 700 }}>
-              Add Schedule
-            </Text>
-            {/* <Image
+              <MaterialIcons
+                style={{ color: "#fff" }}
+                size={20}
+                name="arrow-back"
+              />
+            </TouchableOpacity>
+            <View style={styles.navCenter}>
+              <Text style={{ color: "#fff", fontSize: 17, fontWeight: 700 }}>
+                Add Schedule
+              </Text>
+              {/* <Image
               source={require("@/assets/images/logo.png")}
               style={styles.logo}
             />
@@ -125,83 +135,84 @@ const ScheduleScreen = () => {
               source={require("@/assets/images/GateSync.png")}
               style={styles.gatesync}
             /> */}
+            </View>
+            <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
+              <LoadingWrapper loading={isLoading}>
+                <Text style={styles.saveButtonText}>Save</Text>
+              </LoadingWrapper>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
-            <LoadingWrapper loading={isLoading}>
-              <Text style={styles.saveButtonText}>Save</Text>
-            </LoadingWrapper>
-          </TouchableOpacity>
-        </View>
 
-        {/* Calendar Section */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Select Date:</Text>
-          <Calendar
-            onDayPress={(day: any) => setSelectedDate(day.dateString)}
-            markedDates={{
-              [selectedDate]: { selected: true, selectedColor: "#007bff" },
-            }}
-            theme={{
-              selectedDayBackgroundColor: "#007bff",
-              todayTextColor: "#007bff",
-              arrowColor: "#007bff",
-            }}
-          />
-          <View style={styles.dateContainer}>
-            <Text style={styles.dateLabel}>Selected Date:</Text>
-            <Text style={styles.dateText}>{selectedDate}</Text>
+          {/* Calendar Section */}
+          <View style={styles.section}>
+            <Text style={styles.label}>Select Date:</Text>
+            <Calendar
+              onDayPress={(day: any) => setSelectedDate(day.dateString)}
+              markedDates={{
+                [selectedDate]: { selected: true, selectedColor: "#007bff" },
+              }}
+              theme={{
+                selectedDayBackgroundColor: "#007bff",
+                todayTextColor: "#007bff",
+                arrowColor: "#007bff",
+              }}
+            />
+            <View style={styles.dateContainer}>
+              <Text style={styles.dateLabel}>Selected Date:</Text>
+              <Text style={styles.dateText}>{selectedDate}</Text>
+            </View>
           </View>
-        </View>
 
-        {/* Time In Picker */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Time In:</Text>
-          <TouchableOpacity
-            style={styles.timeButton}
-            onPress={() => setShowTimeInPicker(true)}
-          >
-            <Text style={styles.timeText}>
-              {timeIn.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </Text>
-          </TouchableOpacity>
-          {showTimeInPicker && (
-            <DateTimePicker
-              value={timeIn}
-              mode="time"
-              display="spinner"
-              onChange={onChangeTimeIn}
-            />
-          )}
-        </View>
+          {/* Time In Picker */}
+          <View style={styles.section}>
+            <Text style={styles.label}>Time In:</Text>
+            <TouchableOpacity
+              style={styles.timeButton}
+              onPress={() => setShowTimeInPicker(true)}
+            >
+              <Text style={styles.timeText}>
+                {timeIn.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Text>
+            </TouchableOpacity>
+            {showTimeInPicker && (
+              <DateTimePicker
+                value={timeIn}
+                mode="time"
+                display="spinner"
+                onChange={onChangeTimeIn}
+              />
+            )}
+          </View>
 
-        {/* Time Out Picker */}
-        <View style={styles.section}>
-          <Text style={styles.label}>Time Out:</Text>
-          <TouchableOpacity
-            style={styles.timeButton}
-            onPress={() => setShowTimeOutPicker(true)}
-          >
-            <Text style={styles.timeText}>
-              {timeOut.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </Text>
-          </TouchableOpacity>
-          {showTimeOutPicker && (
-            <DateTimePicker
-              value={timeOut}
-              mode="time"
-              display="spinner"
-              onChange={onChangeTimeOut}
-            />
-          )}
+          {/* Time Out Picker */}
+          <View style={styles.section}>
+            <Text style={styles.label}>Time Out:</Text>
+            <TouchableOpacity
+              style={styles.timeButton}
+              onPress={() => setShowTimeOutPicker(true)}
+            >
+              <Text style={styles.timeText}>
+                {timeOut.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Text>
+            </TouchableOpacity>
+            {showTimeOutPicker && (
+              <DateTimePicker
+                value={timeOut}
+                mode="time"
+                display="spinner"
+                onChange={onChangeTimeOut}
+              />
+            )}
+          </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

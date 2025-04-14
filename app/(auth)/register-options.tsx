@@ -6,43 +6,52 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 
 export default function registerOptions() {
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#F7F7F7" barStyle="light-content" />
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
+      <View style={styles.container}>
+        <StatusBar backgroundColor="#F7F7F7" barStyle="light-content" />
 
-      {/* Add blue circle */}
-      <View style={styles.bluecircle} />
-      <View
-        // colors={['#5cb8ff', '#6b9bfa']} // Gradient colors (same as splash screen)
-        style={styles.bluecircle2}
-      />
-      <Image
-        source={require("@/assets/images/facescanner.png")}
-        style={styles.facescanner}
-      />
-      <Image
-        source={require("@/assets/images/arrows.png")}
-        style={styles.arrows}
-      />
-      <Text style={styles.login}> Login </Text>
-      <Text style={styles.as}> as </Text>
+        {/* Add blue circle */}
+        <View style={styles.bluecircle} />
+        <View
+          // colors={['#5cb8ff', '#6b9bfa']} // Gradient colors (same as splash screen)
+          style={styles.bluecircle2}
+        />
+        <Image
+          source={require("@/assets/images/facescanner.png")}
+          style={styles.facescanner}
+        />
+        <Image
+          source={require("@/assets/images/arrows.png")}
+          style={styles.arrows}
+        />
+        <Text style={styles.login}> Login </Text>
+        <Text style={styles.as}> as </Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.navigate("/student-signup")} // Navigate to the Login screen
-      >
-        <Text style={styles.buttonStudent}>Student</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.buttonparent}
-        onPress={() => router.navigate('/parent-signup')} // Navigate to the Login screen
-      >
-        <Text style={styles.buttonParent}>Parent</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.navigate("/student-signup")} // Navigate to the Login screen
+        >
+          <Text style={styles.buttonStudent}>Student</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonparent}
+          onPress={() => router.navigate("/parent-signup")} // Navigate to the Login screen
+        >
+          <Text style={styles.buttonParent}>Parent</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
