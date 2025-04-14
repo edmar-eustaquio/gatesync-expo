@@ -1,4 +1,5 @@
 import { useAppContext } from "@/AppProvider";
+import CustomTopbar from "@/components/CustomTopbar";
 import { uploadImage } from "@/helper/cloudinary";
 import { selectImage } from "@/helper/ImageSelector";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
@@ -103,7 +104,7 @@ const ProfileScreen = () => {
           ...user,
           image: imageUrl,
         });
-        
+
         const linkingData = {
           studentImage: imageUrl,
         };
@@ -121,96 +122,100 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Profile Details Container */}
-      <View style={styles.profileContainer}>
-        <TouchableOpacity onPress={onSendImage}>
-          <Image
-            source={
-              user?.image
-                ? { uri: user.image }
-                : require("@/assets/images/account_circle.png")
-            }
-            style={styles.profileicon}
-          />
-        </TouchableOpacity>
-        <Text style={styles.infolabel}>NAME:</Text>
-        <Text style={styles.username}>{name}</Text>
+    <>
+      <CustomTopbar title="Profile" />
 
-        <Text style={styles.infolabel}>COURSE:</Text>
-        <Text style={styles.course}>{course}</Text>
+      <View style={styles.container}>
+        {/* Profile Details Container */}
+        <View style={styles.profileContainer}>
+          <TouchableOpacity onPress={onSendImage}>
+            <Image
+              source={
+                user?.image
+                  ? { uri: user.image }
+                  : require("@/assets/images/account_circle.png")
+              }
+              style={styles.profileicon}
+            />
+          </TouchableOpacity>
+          <Text style={styles.infolabel}>NAME:</Text>
+          <Text style={styles.username}>{name}</Text>
 
-        <Text style={styles.infolabel}>ID NUMBER:</Text>
-        <Text style={styles.infoid}>{idNumber}</Text>
+          <Text style={styles.infolabel}>COURSE:</Text>
+          <Text style={styles.course}>{course}</Text>
 
-        <Text style={styles.infolabel}>YEAR LEVEL:</Text>
-        <Text style={styles.infolevel}>{yearLevel}</Text>
+          <Text style={styles.infolabel}>ID NUMBER:</Text>
+          <Text style={styles.infoid}>{idNumber}</Text>
 
-        <Text style={styles.infolabel}>EMAIL:</Text>
-        <Text style={styles.infomail}>{email}</Text>
+          <Text style={styles.infolabel}>YEAR LEVEL:</Text>
+          <Text style={styles.infolevel}>{yearLevel}</Text>
 
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => setModalVisible(true)}
+          <Text style={styles.infolabel}>EMAIL:</Text>
+          <Text style={styles.infomail}>{email}</Text>
+
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={styles.editButtonText}>Edit Profile</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Edit Profile Modal */}
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalVisible(false)}
         >
-          <Text style={styles.editButtonText}>Edit Profile</Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Edit Profile</Text>
 
-      {/* Edit Profile Modal */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Edit Profile</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="User Name"
+                value={name}
+                onChangeText={setName}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Course"
+                value={course}
+                onChangeText={setCourse}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="ID Number"
+                value={idNumber}
+                onChangeText={setIdNumber}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Year Level"
+                value={yearLevel}
+                onChangeText={setYearLevel}
+              />
 
-            <TextInput
-              style={styles.input}
-              placeholder="User Name"
-              value={name}
-              onChangeText={setName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Course"
-              value={course}
-              onChangeText={setCourse}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="ID Number"
-              value={idNumber}
-              onChangeText={setIdNumber}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Year Level"
-              value={yearLevel}
-              onChangeText={setYearLevel}
-            />
-
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={handleSaveChanges}
-              >
-                <Text style={styles.modalButtonText}>Save Changes</Text>
-              </TouchableOpacity>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={handleSaveChanges}
+                >
+                  <Text style={styles.modalButtonText}>Save Changes</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-    </View>
+        </Modal>
+      </View>
+    </>
   );
 };
 

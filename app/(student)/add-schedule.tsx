@@ -13,6 +13,7 @@ import { useAppContext } from "@/AppProvider";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import { router } from "expo-router";
 import LoadingWrapper from "@/components/LoadingWrapper";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const ScheduleScreen = () => {
   const [selectedDate, setSelectedDate] = useState(
@@ -102,20 +103,28 @@ const ScheduleScreen = () => {
       <View style={styles.container}>
         <View style={styles.navbar}>
           <TouchableOpacity onPress={() => router.back()}>
-            <Image
+            {/* <Image
               source={require("@/assets/images/back.png")}
               style={styles.back}
+            /> */}
+            <MaterialIcons
+              style={{ color: "#fff" }}
+              size={20}
+              name="arrow-back"
             />
           </TouchableOpacity>
           <View style={styles.navCenter}>
-            <Image
+            <Text style={{ color: "#fff", fontSize: 17, fontWeight: 700 }}>
+              Add Schedule
+            </Text>
+            {/* <Image
               source={require("@/assets/images/logo.png")}
               style={styles.logo}
             />
             <Image
               source={require("@/assets/images/GateSync.png")}
               style={styles.gatesync}
-            />
+            /> */}
           </View>
           <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
             <LoadingWrapper loading={isLoading}>
@@ -252,7 +261,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#BCE5FF",
+    backgroundColor: "#5FA7FF",
+    // backgroundColor: "#BCE5FF",
     paddingVertical: 10,
     paddingHorizontal: 15,
     elevation: 5,
@@ -289,6 +299,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: "#007bff",
     borderRadius: 5,
+    marginRight: 5,
   },
   saveButtonText: {
     color: "#fff",

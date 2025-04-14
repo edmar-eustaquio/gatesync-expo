@@ -28,7 +28,7 @@ export default function Topbar({
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          backgroundColor: "#BCE5FF",
+          backgroundColor: "#5FA7FF",
           paddingVertical: 10,
           paddingHorizontal: 15,
           elevation: 5,
@@ -54,46 +54,52 @@ export default function Topbar({
         }}
       >
         <TouchableOpacity onPress={() => setSidebarVisible(true)}>
-          <MaterialIcons size={20} name="menu" />
+          <MaterialIcons style={{ color: "#fff" }} size={20} name="menu" />
         </TouchableOpacity>
-        {title ? <Text>{title}</Text> : null}
+        {title ? (
+          <Text style={{ color: "#fff", fontSize: 17, fontWeight: 700 }}>
+            {title}
+          </Text>
+        ) : null}
         <TouchableOpacity onPress={() => setVisible(!visible)}>
-          <MaterialIcons size={20} name="more-vert" />
+          <MaterialIcons style={{ color: "#fff" }} size={20} name="more-vert" />
         </TouchableOpacity>
       </View>
 
-      <Modal
-        visible={visible}
-        animationType="fade"
-        transparent={true}
-        onRequestClose={() => setVisible(false)}
-      >
-        <TouchableOpacity
-          style={{ flex: 1 }}
-          onPress={() => setVisible(false)}
-        />
-        <View
-          style={{
-            position: "absolute",
-            top:
-              Platform.OS === "android"
-                ? (StatusBar.currentHeight ?? 0) + 25
-                : 90,
-            right: 25,
-            width: 150,
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            borderTopRightRadius: 0,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
-            elevation: 5,
-          }}
+      {visible && (
+        <Modal
+          visible={true}
+          animationType="fade"
+          transparent={true}
+          onRequestClose={() => setVisible(false)}
         >
-          {children}
-        </View>
-      </Modal>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => setVisible(false)}
+          />
+          <View
+            style={{
+              position: "absolute",
+              top:
+                Platform.OS === "android"
+                  ? (StatusBar.currentHeight ?? 0) + 25
+                  : 90,
+              right: 25,
+              width: 150,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              borderTopRightRadius: 0,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 5,
+            }}
+          >
+            {children}
+          </View>
+        </Modal>
+      )}
     </>
   );
 }

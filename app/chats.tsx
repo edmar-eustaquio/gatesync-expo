@@ -27,6 +27,7 @@ import { useAppContext } from "@/AppProvider";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import { db } from "@/firebase";
 import LoadingWrapper from "@/components/LoadingWrapper";
+import CustomTopbar from "@/components/CustomTopbar";
 
 const ChatPage = () => {
   const { otherUserId, otherUserName, otherUserImage }: any =
@@ -87,73 +88,77 @@ const ChatPage = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Dismiss keyboard when tapping outside */}
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{ flex: 1 }}>
-          {/* Navigation Bar */}
-          <View style={styles.navbar}>
-            <TouchableOpacity onPress={() => router.back()}>
+    <>
+      <CustomTopbar title={otherUserName || "Unknown User"} />
+
+      <View style={styles.container}>
+        {/* Dismiss keyboard when tapping outside */}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{ flex: 1, padding: 10 }}>
+            {/* Navigation Bar */}
+            {/* <View style={styles.navbar}>
+              <TouchableOpacity onPress={() => router.back()}>
+                <Image
+                  source={require("@/assets/images/back.png")}
+                  style={styles.back}
+                />
+              </TouchableOpacity>
+              <Text style={styles.name}>{otherUserName || "Unknown User"}</Text>
               <Image
-                source={require("@/assets/images/back.png")}
-                style={styles.back}
+                source={
+                  otherUserImage
+                    ? { uri: otherUserImage }
+                    : require("@/assets/images/accountcircle.png")
+                }
+                style={styles.account}
               />
-            </TouchableOpacity>
-            <Text style={styles.name}>{otherUserName || "Unknown User"}</Text>
-            <Image
-              source={
-                otherUserImage
-                  ? { uri: otherUserImage }
-                  : require("@/assets/images/accountcircle.png")
+            </View> */}
+
+            <ScrollView
+              ref={scrollViewRef}
+              onContentSizeChange={() =>
+                scrollViewRef.current?.scrollToEnd({ animated: true })
               }
-              style={styles.account}
-            />
+            >
+              {messages.map((item: any) => (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.messageContainer,
+                    item.senderId === user?.id
+                      ? styles.sentMessage
+                      : styles.receivedMessage,
+                  ]}
+                >
+                  <Text style={styles.messageText}>{item.message}</Text>
+                </View>
+              ))}
+            </ScrollView>
+
+            {/* Chat messages list */}
           </View>
+        </TouchableWithoutFeedback>
 
-          <ScrollView
-            ref={scrollViewRef}
-            onContentSizeChange={() =>
-              scrollViewRef.current?.scrollToEnd({ animated: true })
-            }
-          >
-            {messages.map((item: any) => (
-              <View
-                key={item.id}
-                style={[
-                  styles.messageContainer,
-                  item.senderId === user?.id
-                    ? styles.sentMessage
-                    : styles.receivedMessage,
-                ]}
-              >
-                <Text style={styles.messageText}>{item.message}</Text>
-              </View>
-            ))}
-          </ScrollView>
-
-          {/* Chat messages list */}
-        </View>
-      </TouchableWithoutFeedback>
-
-      {/* Message Input Section */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.inputContainer}
-      >
-        <TextInput
-          style={styles.input}
-          value={newMessage}
-          onChangeText={setNewMessage}
-          placeholder="Type a message..."
-          placeholderTextColor={"#686D76"}
-        />
-        <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-          <LoadingWrapper loading={isLoading}>
-            <Image source={require("@/assets/images/send.png")} />
-          </LoadingWrapper>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </View>
+        {/* Message Input Section */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.inputContainer}
+        >
+          <TextInput
+            style={styles.input}
+            value={newMessage}
+            onChangeText={setNewMessage}
+            placeholder="Type a message..."
+            placeholderTextColor={"#686D76"}
+          />
+          <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+            <LoadingWrapper loading={isLoading}>
+              <Image source={require("@/assets/images/send.png")} />
+            </LoadingWrapper>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </View>
+    </>
   );
 };
 

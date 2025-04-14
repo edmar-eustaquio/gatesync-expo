@@ -34,7 +34,6 @@ export default function index() {
       //   image:
       //     "https://res.cloudinary.com/diwwrxy8b/image/upload/v1744038332/bwzd5vt0wpb8b8vyjcd1.jpg",
       // });
-
       // router.replace("/(studenttabs)");
 
       router.replace("/login");

@@ -4,7 +4,13 @@ import { db } from "@/firebase";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import useScreenFocusHook from "@/hooks/useScreenFocusHook";
 import { router } from "expo-router";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -42,7 +48,11 @@ const ParentHomeScreen = () => {
         }
 
         unsubs = onSnapshot(
-          query(collection(db, "schedules"), where("studentId", "in", ids)),
+          query(
+            collection(db, "schedules"),
+            where("studentId", "in", ids),
+            orderBy("date", "desc")
+          ),
           (scheduleSnapshot) => {
             setSchedule(scheduleSnapshot.docs.map((doc) => doc.data()));
           }
@@ -59,72 +69,74 @@ const ParentHomeScreen = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <>
       <ParentTopBar title="Home" />
 
-      {/* Link Children Section */}
-      <View style={styles.linkcontainer}>
-        <TouchableOpacity onPress={() => router.navigate("/linked-children")}>
-          <View style={styles.button}>
-            <Image
-              source={require("@/assets/images/parent_.png")}
-              style={styles.parenticon}
-            />
-            <Image
-              source={require("@/assets/images/relationship.png")}
-              style={styles.relationicon}
-            />
-          </View>
-        </TouchableOpacity>
-        <Image
-          source={require("@/assets/images/arrowright.png")}
-          style={styles.arrowicon}
-        />
-        <Text style={styles.Text}> Link with Son / </Text>
-        <Text style={styles.Text1}> Daughter</Text>
-      </View>
-
-      {/* Class Schedule Section */}
-      <View style={styles.schedcontainer}>
-        <View style={styles.titlecontainer}>
-          <Text style={styles.titleschedule}> Class Hours</Text>
+      <View style={styles.container}>
+        {/* Link Children Section */}
+        <View style={styles.linkcontainer}>
+          <TouchableOpacity onPress={() => router.navigate("/linked-children")}>
+            <View style={styles.button}>
+              <Image
+                source={require("@/assets/images/parent_.png")}
+                style={styles.parenticon}
+              />
+              <Image
+                source={require("@/assets/images/relationship.png")}
+                style={styles.relationicon}
+              />
+            </View>
+          </TouchableOpacity>
+          <Image
+            source={require("@/assets/images/arrowright.png")}
+            style={styles.arrowicon}
+          />
+          <Text style={styles.Text}> Link with Son / </Text>
+          <Text style={styles.Text1}> Daughter</Text>
         </View>
 
-        {/* Displaying schedule in table format */}
-        {/* Outer ScrollView for vertical scrolling */}
-        <ScrollView style={{ flex: 1 }}>
-          {/* Inner ScrollView for horizontal scrolling */}
-          <ScrollView
-            horizontal={true}
-            contentContainerStyle={styles.scheduleTable}
-          >
-            <View>
-              {/* Table Header */}
-              <View style={styles.tableHeader}>
-                <Text style={styles.tableHeaderText}>Name</Text>
-                <Text style={styles.tableHeaderText}>Date</Text>
-                <Text style={styles.tableHeaderText1}>Class Start</Text>
-                <Text style={styles.tableHeaderText2}>Class End</Text>
-              </View>
+        {/* Class Schedule Section */}
+        <View style={styles.schedcontainer}>
+          <View style={styles.titlecontainer}>
+            <Text style={styles.titleschedule}> Class Hours</Text>
+          </View>
 
-              {/* Table Rows */}
-              {schedule.length > 0 ? (
-                schedule.map((sched: any, index) => (
-                  <View key={index} style={styles.tableRow}>
-                    <Text style={styles.tableCell1}>{sched.studentName}</Text>
-                    <Text style={styles.tableCell2}>{sched.date}</Text>
-                    <Text style={styles.tableCell3}>{sched.timeIn}</Text>
-                    <Text style={styles.tableCell4}>{sched.timeOut}</Text>
-                  </View>
-                ))
-              ) : (
-                <Text style={tw``}>No class schedule found</Text>
-              )}
-            </View>
+          {/* Displaying schedule in table format */}
+          {/* Outer ScrollView for vertical scrolling */}
+          <ScrollView style={{ flex: 1 }}>
+            {/* Inner ScrollView for horizontal scrolling */}
+            <ScrollView
+              horizontal={true}
+              contentContainerStyle={styles.scheduleTable}
+            >
+              <View>
+                {/* Table Header */}
+                <View style={styles.tableHeader}>
+                  <Text style={styles.tableHeaderText}>Name</Text>
+                  <Text style={styles.tableHeaderText}>Date</Text>
+                  <Text style={styles.tableHeaderText1}>Class Start</Text>
+                  <Text style={styles.tableHeaderText2}>Class End</Text>
+                </View>
+
+                {/* Table Rows */}
+                {schedule.length > 0 ? (
+                  schedule.map((sched: any, index) => (
+                    <View key={index} style={styles.tableRow}>
+                      <Text style={styles.tableCell1}>{sched.studentName}</Text>
+                      <Text style={styles.tableCell2}>{sched.date}</Text>
+                      <Text style={styles.tableCell3}>{sched.timeIn}</Text>
+                      <Text style={styles.tableCell4}>{sched.timeOut}</Text>
+                    </View>
+                  ))
+                ) : (
+                  <Text style={tw``}>No class schedule found</Text>
+                )}
+              </View>
+            </ScrollView>
           </ScrollView>
-        </ScrollView>
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useAppContext } from "@/AppProvider";
+import CustomTopbar from "@/components/CustomTopbar";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import { useEffect, useState } from "react";
 import {
@@ -97,44 +98,48 @@ export default function StudentsList() {
   };
 
   return (
-    <View style={tw`p-3`}>
-      <Text style={tw`w-full text-lg font-bold text-center mb-3`}>
-        Select Student to Link
-      </Text>
+    <>
+      <CustomTopbar title="Student Lists" />
 
-      <TextInput
-        style={tw`w-full py-2 px-4 mb-2 border rounded-md bg-white border-gray-300`}
-        placeholder="Search here"
-        value={search}
-        onChangeText={setSearch}
-        placeholderTextColor="#686D76"
-      />
-
-      {filtered.length > 0 ? (
-        <ScrollView>
-          {filtered.map((student) => (
-            <TouchableOpacity
-              style={tw`py-2 px-4 mt-2 bg-gray-500 shadow-lg rounded-lg w-full`}
-              key={student.id}
-              onPress={() => onLink(student)}
-            >
-              <Text style={tw`text-base text-white font-semibold`}>
-                {student.name}
-              </Text>
-              <Text style={tw`text-base text-white font-semibold mt-1`}>
-                {student.email}
-              </Text>
-              <Text style={tw`text-base text-white font-semibold mt-1`}>
-                {student.idNumber}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      ) : (
-        <Text style={tw`h-10 w-full text-center text-lg font-semibold`}>
-          No students found.
+      <View style={tw`p-3`}>
+        <Text style={tw`w-full text-lg font-bold text-center mb-3`}>
+          Select Student to Link
         </Text>
-      )}
-    </View>
+
+        <TextInput
+          style={tw`w-full py-2 px-4 mb-2 border rounded-md bg-white border-gray-300`}
+          placeholder="Search here"
+          value={search}
+          onChangeText={setSearch}
+          placeholderTextColor="#686D76"
+        />
+
+        {filtered.length > 0 ? (
+          <ScrollView>
+            {filtered.map((student) => (
+              <TouchableOpacity
+                style={tw`py-2 px-4 mt-2 bg-gray-500 shadow-lg rounded-lg w-full`}
+                key={student.id}
+                onPress={() => onLink(student)}
+              >
+                <Text style={tw`text-base text-white font-semibold`}>
+                  {student.name}
+                </Text>
+                <Text style={tw`text-base text-white font-semibold mt-1`}>
+                  {student.email}
+                </Text>
+                <Text style={tw`text-base text-white font-semibold mt-1`}>
+                  {student.idNumber}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        ) : (
+          <Text style={tw`h-10 w-full text-center text-lg font-semibold`}>
+            No students found.
+          </Text>
+        )}
+      </View>
+    </>
   );
 }

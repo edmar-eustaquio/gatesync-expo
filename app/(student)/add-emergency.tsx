@@ -12,6 +12,7 @@ import { router } from "expo-router";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import { useAppContext } from "@/AppProvider";
 import LoadingWrapper from "@/components/LoadingWrapper";
+import CustomTopbar from "@/components/CustomTopbar";
 
 export default function addEmergency() {
   const [selectedReason, setSelectedReason] = useState("");
@@ -78,71 +79,75 @@ export default function addEmergency() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Navigation Bar */}
-      <View style={styles.navbar}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Image
-            source={require("@/assets/images/back.png")}
-            style={styles.back}
-          />
-        </TouchableOpacity>
-        <View style={styles.navCenter}>
-          <Image
-            source={require("@/assets/images/logo.png")}
-            style={styles.logo}
-          />
-          <Image
-            source={require("@/assets/images/GateSync.png")}
-            style={styles.gatesync}
-          />
-        </View>
-      </View>
+    <>
+      <CustomTopbar title="Add Emergency" />
 
-      {/* Text Container */}
-      <View style={styles.textcontainer}>
-        <Text style={styles.text}>This page allows users to submit</Text>
-        <Text style={styles.text}>and manage leave requests. Please</Text>
-        <Text style={styles.text}>specify the reason for your leave,</Text>
-        <Text style={styles.text}>track the status of your requests,</Text>
-        <Text style={styles.text}>and receive updates directly</Text>
-        <Text style={styles.text}>within the system.</Text>
-      </View>
-
-      {/* Emergency Reason Selection */}
-      <View style={styles.reasonSelectionContainer}>
-        <Text style={styles.selectionTitle}>Select an Emergency Reason:</Text>
-        {reasons.map((reason, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.reasonContainer}
-            onPress={() => setSelectedReason(reason)}
-          >
-            <View style={styles.radioCircle}>
-              {selectedReason === reason && (
-                <View style={styles.selectedCircle} />
-              )}
-            </View>
-            <Text style={styles.reasonText}>{reason}</Text>
+      <View style={styles.container}>
+        {/* Navigation Bar */}
+        {/* <View style={styles.navbar}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Image
+              source={require("@/assets/images/back.png")}
+              style={styles.back}
+            />
           </TouchableOpacity>
-        ))}
-        {selectedReason === "Other" && (
-          <TextInput
-            style={styles.input}
-            placeholder="Please specify your reason"
-            value={customReason}
-            onChangeText={setCustomReason}
-          />
-        )}
-      </View>
+          <View style={styles.navCenter}>
+            <Image
+              source={require("@/assets/images/logo.png")}
+              style={styles.logo}
+            />
+            <Image
+              source={require("@/assets/images/GateSync.png")}
+              style={styles.gatesync}
+            />
+          </View>
+        </View> */}
 
-      {/* Submit Button */}
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <LoadingWrapper loading={isLoading}>
-          <Text style={styles.submitButtonText}>Submit</Text>
-        </LoadingWrapper>
-      </TouchableOpacity>
-    </View>
+        {/* Text Container */}
+        <View style={styles.textcontainer}>
+          <Text style={styles.text}>This page allows users to submit</Text>
+          <Text style={styles.text}>and manage leave requests. Please</Text>
+          <Text style={styles.text}>specify the reason for your leave,</Text>
+          <Text style={styles.text}>track the status of your requests,</Text>
+          <Text style={styles.text}>and receive updates directly</Text>
+          <Text style={styles.text}>within the system.</Text>
+        </View>
+
+        {/* Emergency Reason Selection */}
+        <View style={styles.reasonSelectionContainer}>
+          <Text style={styles.selectionTitle}>Select an Emergency Reason:</Text>
+          {reasons.map((reason, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.reasonContainer}
+              onPress={() => setSelectedReason(reason)}
+            >
+              <View style={styles.radioCircle}>
+                {selectedReason === reason && (
+                  <View style={styles.selectedCircle} />
+                )}
+              </View>
+              <Text style={styles.reasonText}>{reason}</Text>
+            </TouchableOpacity>
+          ))}
+          {selectedReason === "Other" && (
+            <TextInput
+              style={styles.input}
+              placeholder="Please specify your reason"
+              value={customReason}
+              onChangeText={setCustomReason}
+            />
+          )}
+        </View>
+
+        {/* Submit Button */}
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <LoadingWrapper loading={isLoading}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </LoadingWrapper>
+        </TouchableOpacity>
+      </View>
+    </>
   );
 }
 

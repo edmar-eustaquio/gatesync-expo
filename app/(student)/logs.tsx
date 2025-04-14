@@ -11,10 +11,12 @@ import {
   query,
   collection,
   where,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "@/firebase"; // Import your Firebase config
 import { useAppContext } from "@/AppProvider";
 import { DateTimeConverter } from "@/helper/DateTimeConverter";
+import CustomTopbar from "@/components/CustomTopbar";
 
 const MessageScreen = () => {
   const [activities, setActivities] = useState<any>([]);
@@ -24,7 +26,8 @@ const MessageScreen = () => {
   useEffect(() => {
     const q = query(
       collection(db, "scanned_ids"),
-      where("idNumber", "==", user?.idNumber)
+      where("idNumber", "==", user?.idNumber),
+      orderBy("timestamp", "desc")
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -54,6 +57,8 @@ const MessageScreen = () => {
 
   return (
     <>
+      <CustomTopbar title="Activity Logs" />
+
       {/* Main ScrollView */}
       <ScrollView style={styles.container}>
         <Text style={styles.welcomeText}>Activity Logs</Text>

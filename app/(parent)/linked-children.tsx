@@ -14,6 +14,7 @@ import useFirebaseHook, { removeSeenNotifs } from "@/hooks/useFirebaseHook";
 import tw from "tailwind-react-native-classnames";
 import { router } from "expo-router";
 import useScreenFocusHook from "@/hooks/useScreenFocusHook";
+import CustomTopbar from "@/components/CustomTopbar";
 
 const Linked = () => {
   const [linkedChilds, setLinkedChilds] = useState<any>([]);
@@ -156,89 +157,93 @@ const Linked = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Content */}
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Linked Parents</Text>
+    <>
+      <CustomTopbar title="Linked Students" />
 
-        <TouchableOpacity
-          style={tw`py-1 px-3 rounded-md bg-blue-600 mb-3`}
-          onPress={() => router.navigate("/students-list")}
-        >
-          <Text style={tw`text-white text-base font-semibold`}>
-            Add Student
-          </Text>
-        </TouchableOpacity>
+      <View style={styles.container}>
+        {/* Content */}
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={styles.title}>Linked Students</Text>
 
-        {fetchLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="#5394F2"
-            style={styles.loader}
-          />
-        ) : linkedChilds.length > 0 ? (
-          linkedChilds.map((linking: any) => (
-            <View key={linking.id} style={styles.parentCard}>
-              <View style={styles.parentHeader}>
-                <Image
-                  source={
-                    linking.studentImage
-                      ? { uri: linking.studentImage }
-                      : require("@/assets/images/account_circle.png")
-                  }
-                  style={styles.parentAvatar}
-                />
-                <Text style={styles.parentName}>{linking.studentName}</Text>
-              </View>
-              <Text style={styles.parentInfo}>📧 {linking.studentEmail}</Text>
-              <Text style={styles.parentInfo}>{linking.parentIdNumber}</Text>
+          <TouchableOpacity
+            style={tw`py-1 px-3 rounded-md bg-blue-600 mb-3`}
+            onPress={() => router.navigate("/students-list")}
+          >
+            <Text style={tw`text-white text-base font-semibold`}>
+              Add Student
+            </Text>
+          </TouchableOpacity>
 
-              {linking.status == "Declined" ? (
-                <Text
-                  style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-red-600 text-red-600`}
-                >
-                  Declined
-                </Text>
-              ) : !linking.requestByStudent && linking.status == "Pending" ? (
-                <Text
-                  style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-yellow-400 text-yellow-400`}
-                >
-                  Pending
-                </Text>
-              ) : linking.status == "Pending" ? (
-                <View style={tw`w-full mt-4 flex-row justify-center`}>
-                  <TouchableOpacity
-                    style={tw`bg-blue-700 rounded-md px-4 py-1 mr-2`}
-                    onPress={() => onAccept(linking.id, linking.studentId)}
-                  >
-                    <Text style={tw`text-white text-base font-semibold`}>
-                      Accept
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={tw`bg-red-700 rounded-md px-4 py-1`}
-                    onPress={() => onDecline(linking.id, linking.studentId)}
-                  >
-                    <Text style={tw`text-white text-base font-semibold`}>
-                      Decline
-                    </Text>
-                  </TouchableOpacity>
+          {fetchLoading ? (
+            <ActivityIndicator
+              size="large"
+              color="#5394F2"
+              style={styles.loader}
+            />
+          ) : linkedChilds.length > 0 ? (
+            linkedChilds.map((linking: any) => (
+              <View key={linking.id} style={styles.parentCard}>
+                <View style={styles.parentHeader}>
+                  <Image
+                    source={
+                      linking.studentImage
+                        ? { uri: linking.studentImage }
+                        : require("@/assets/images/account_circle.png")
+                    }
+                    style={styles.parentAvatar}
+                  />
+                  <Text style={styles.parentName}>{linking.studentName}</Text>
                 </View>
-              ) : (
-                <TouchableOpacity
-                  style={styles.unlinkButton}
-                  onPress={() => unlink(linking.id, linking.studentId)}
-                >
-                  <Text style={styles.unlinkText}>Unlink Student</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noResults}>No linked students found</Text>
-        )}
-      </ScrollView>
-    </View>
+                <Text style={styles.parentInfo}>📧 {linking.studentEmail}</Text>
+                <Text style={styles.parentInfo}>{linking.parentIdNumber}</Text>
+
+                {linking.status == "Declined" ? (
+                  <Text
+                    style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-red-600 text-red-600`}
+                  >
+                    Declined
+                  </Text>
+                ) : !linking.requestByStudent && linking.status == "Pending" ? (
+                  <Text
+                    style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-yellow-400 text-yellow-400`}
+                  >
+                    Pending
+                  </Text>
+                ) : linking.status == "Pending" ? (
+                  <View style={tw`w-full mt-4 flex-row justify-center`}>
+                    <TouchableOpacity
+                      style={tw`bg-blue-700 rounded-md px-4 py-1 mr-2`}
+                      onPress={() => onAccept(linking.id, linking.studentId)}
+                    >
+                      <Text style={tw`text-white text-base font-semibold`}>
+                        Accept
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={tw`bg-red-700 rounded-md px-4 py-1`}
+                      onPress={() => onDecline(linking.id, linking.studentId)}
+                    >
+                      <Text style={tw`text-white text-base font-semibold`}>
+                        Decline
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.unlinkButton}
+                    onPress={() => unlink(linking.id, linking.studentId)}
+                  >
+                    <Text style={styles.unlinkText}>Unlink Student</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))
+          ) : (
+            <Text style={styles.noResults}>No linked students found</Text>
+          )}
+        </ScrollView>
+      </View>
+    </>
   );
 };
 

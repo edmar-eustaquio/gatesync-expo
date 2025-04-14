@@ -14,6 +14,7 @@ import useFirebaseHook, { removeSeenNotifs } from "@/hooks/useFirebaseHook";
 import tw from "tailwind-react-native-classnames";
 import { router } from "expo-router";
 import useScreenFocusHook from "@/hooks/useScreenFocusHook";
+import CustomTopbar from "@/components/CustomTopbar";
 
 const LinkedParent = () => {
   const [linkedParents, setLinkedParents] = useState<any>([]);
@@ -158,89 +159,95 @@ const LinkedParent = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Content */}
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Linked Parents</Text>
+    <>
+      <CustomTopbar title="Linked Parents" />
 
-        <TouchableOpacity
-          style={tw`py-1 px-3 rounded-md bg-blue-600 mb-3`}
-          onPress={() => router.navigate("/parents-list")}
-        >
-          <Text style={tw`text-white text-base font-semibold`}>Add Parent</Text>
-        </TouchableOpacity>
+      <View style={styles.container}>
+        {/* Content */}
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={styles.title}>Linked Parents</Text>
 
-        {fetchLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="#5394F2"
-            style={styles.loader}
-          />
-        ) : linkedParents.length > 0 ? (
-          linkedParents.map((linking: any) => (
-            <View key={linking.id} style={styles.parentCard}>
-              <View style={styles.parentHeader}>
-                <Image
-                  source={
-                    linking.parentImage
-                      ? { uri: linking.parentImage }
-                      : require("@/assets/images/account_circle.png")
-                  }
-                  style={styles.parentAvatar}
-                />
-                <Text style={styles.parentName}>{linking.parentName}</Text>
-              </View>
-              <Text style={styles.parentInfo}>📧 {linking.parentEmail}</Text>
-              <Text style={styles.parentInfo}>
-                📞 {linking.parentContactNumber || "N/A"}
-              </Text>
+          <TouchableOpacity
+            style={tw`py-1 px-3 rounded-md bg-blue-600 mb-3`}
+            onPress={() => router.navigate("/parents-list")}
+          >
+            <Text style={tw`text-white text-base font-semibold`}>
+              Add Parent
+            </Text>
+          </TouchableOpacity>
 
-              {linking.status == "Declined" ? (
-                <Text
-                  style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-red-600 text-red-600`}
-                >
-                  Declined
-                </Text>
-              ) : linking.requestByStudent && linking.status == "Pending" ? (
-                <Text
-                  style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-yellow-400 text-yellow-400`}
-                >
-                  Pending
-                </Text>
-              ) : linking.status == "Pending" ? (
-                <View style={tw`w-full mt-4 flex-row justify-center`}>
-                  <TouchableOpacity
-                    style={tw`bg-blue-700 rounded-md px-4 py-1 mr-2`}
-                    onPress={() => onAccept(linking.id, linking.parentId)}
-                  >
-                    <Text style={tw`text-white text-base font-semibold`}>
-                      Accept
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={tw`bg-red-700 rounded-md px-4 py-1`}
-                    onPress={() => onDecline(linking.id, linking.parentId)}
-                  >
-                    <Text style={tw`text-white text-base font-semibold`}>
-                      Decline
-                    </Text>
-                  </TouchableOpacity>
+          {fetchLoading ? (
+            <ActivityIndicator
+              size="large"
+              color="#5394F2"
+              style={styles.loader}
+            />
+          ) : linkedParents.length > 0 ? (
+            linkedParents.map((linking: any) => (
+              <View key={linking.id} style={styles.parentCard}>
+                <View style={styles.parentHeader}>
+                  <Image
+                    source={
+                      linking.parentImage
+                        ? { uri: linking.parentImage }
+                        : require("@/assets/images/account_circle.png")
+                    }
+                    style={styles.parentAvatar}
+                  />
+                  <Text style={styles.parentName}>{linking.parentName}</Text>
                 </View>
-              ) : (
-                <TouchableOpacity
-                  style={styles.unlinkButton}
-                  onPress={() => unlinkParent(linking.id, linking.parentId)}
-                >
-                  <Text style={styles.unlinkText}>Unlink Parent</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noResults}>No linked parents found</Text>
-        )}
-      </ScrollView>
-    </View>
+                <Text style={styles.parentInfo}>📧 {linking.parentEmail}</Text>
+                <Text style={styles.parentInfo}>
+                  📞 {linking.parentContactNumber || "N/A"}
+                </Text>
+
+                {linking.status == "Declined" ? (
+                  <Text
+                    style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-red-600 text-red-600`}
+                  >
+                    Declined
+                  </Text>
+                ) : linking.requestByStudent && linking.status == "Pending" ? (
+                  <Text
+                    style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-yellow-400 text-yellow-400`}
+                  >
+                    Pending
+                  </Text>
+                ) : linking.status == "Pending" ? (
+                  <View style={tw`w-full mt-4 flex-row justify-center`}>
+                    <TouchableOpacity
+                      style={tw`bg-blue-700 rounded-md px-4 py-1 mr-2`}
+                      onPress={() => onAccept(linking.id, linking.parentId)}
+                    >
+                      <Text style={tw`text-white text-base font-semibold`}>
+                        Accept
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={tw`bg-red-700 rounded-md px-4 py-1`}
+                      onPress={() => onDecline(linking.id, linking.parentId)}
+                    >
+                      <Text style={tw`text-white text-base font-semibold`}>
+                        Decline
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.unlinkButton}
+                    onPress={() => unlinkParent(linking.id, linking.parentId)}
+                  >
+                    <Text style={styles.unlinkText}>Unlink Parent</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))
+          ) : (
+            <Text style={styles.noResults}>No linked parents found</Text>
+          )}
+        </ScrollView>
+      </View>
+    </>
   );
 };
 

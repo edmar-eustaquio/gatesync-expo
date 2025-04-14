@@ -1,4 +1,5 @@
 import { useAppContext } from "@/AppProvider";
+import CustomTopbar from "@/components/CustomTopbar";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import { useEffect, useState } from "react";
 import {
@@ -95,41 +96,45 @@ export default function ParentsList() {
   };
 
   return (
-    <View style={tw`p-3`}>
-      <Text style={tw`w-full text-lg font-bold text-center mb-3`}>
-        Select Parents to Link
-      </Text>
+    <>
+      <CustomTopbar title="Parent Lists" />
 
-      <TextInput
-        style={tw`w-full py-2 px-4 mb-2 border rounded-md bg-white border-gray-300`}
-        placeholder="Search here"
-        value={search}
-        onChangeText={setSearch}
-        placeholderTextColor="#686D76"
-      />
-
-      {filtered.length > 0 ? (
-        <ScrollView>
-          {filtered.map((parent) => (
-            <TouchableOpacity
-              style={tw`py-2 px-4 mt-2 bg-gray-500 shadow-lg rounded-lg w-full`}
-              key={parent.id}
-              onPress={() => onLink(parent)}
-            >
-              <Text style={tw`text-base text-white font-semibold`}>
-                {parent.name}
-              </Text>
-              <Text style={tw`text-base text-white font-semibold mt-1`}>
-                {parent.email}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      ) : (
-        <Text style={tw`h-10 w-full text-center text-lg font-semibold`}>
-          No parents found.
+      <View style={tw`p-3`}>
+        <Text style={tw`w-full text-lg font-bold text-center mb-3`}>
+          Select Parents to Link
         </Text>
-      )}
-    </View>
+
+        <TextInput
+          style={tw`w-full py-2 px-4 mb-2 border rounded-md bg-white border-gray-300`}
+          placeholder="Search here"
+          value={search}
+          onChangeText={setSearch}
+          placeholderTextColor="#686D76"
+        />
+
+        {filtered.length > 0 ? (
+          <ScrollView>
+            {filtered.map((parent) => (
+              <TouchableOpacity
+                style={tw`py-2 px-4 mt-2 bg-gray-500 shadow-lg rounded-lg w-full`}
+                key={parent.id}
+                onPress={() => onLink(parent)}
+              >
+                <Text style={tw`text-base text-white font-semibold`}>
+                  {parent.name}
+                </Text>
+                <Text style={tw`text-base text-white font-semibold mt-1`}>
+                  {parent.email}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        ) : (
+          <Text style={tw`h-10 w-full text-center text-lg font-semibold`}>
+            No parents found.
+          </Text>
+        )}
+      </View>
+    </>
   );
 }

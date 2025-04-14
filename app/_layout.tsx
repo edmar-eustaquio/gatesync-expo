@@ -28,7 +28,7 @@ export default function RootLayout() {
     <AppProvider>
       <Stack
         screenOptions={{
-          headerBackTitle: "Back",
+          headerShown: false,
         }}
       >
         <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />

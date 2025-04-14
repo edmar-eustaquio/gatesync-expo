@@ -56,7 +56,7 @@ const NotificationScreen = () => {
 
   return (
     <>
-      <StudentTopBar title="Messages" />
+      <StudentTopBar title="Notifications" />
 
       <View style={styles.box} />
       <Image
