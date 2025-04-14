@@ -43,16 +43,17 @@ const ChatPage = () => {
   const scrollViewRef = useRef<any>(null);
 
   useEffect(() => {
-    const messagesRef = query(
+    const q = query(
       collection(db, "messages"),
-      where("participants", "array-contains", user?.id)
+      where("participants", "array-contains", user?.id),
+      orderBy("date", "asc")
     );
-    const q = query(messagesRef, orderBy("date", "asc"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       let temp = [];
       for (const doc of querySnapshot.docs) {
         const message = doc.data();
+        console.log(message.participants, user?.id, otherUserId);
 
         if (message.participants.includes(otherUserId)) {
           temp.push({
