@@ -28,8 +28,16 @@ const ProfileScreen = () => {
 
   const handleSaveChanges = () =>
     dispatch({
-      process: async ({ update }) => {
+      process: async ({ update, get, where }) => {
         if (!user?.id) return;
+
+        const snap = await get("users", where("idNumber", "==", idNumber));
+        for (const dc of snap.docs) {
+          if (dc.id != user?.id) {
+            Alert.alert("Error", "Student ID already exists");
+            return;
+          }
+        }
 
         await update("users", user?.id, {
           name: name,
@@ -37,6 +45,22 @@ const ProfileScreen = () => {
           idNumber: idNumber,
           yearLevel: yearLevel,
         });
+
+        const linkingData = {
+          studentName: name,
+          studentIdNumber: idNumber,
+        };
+        get("linkings", where("studentId", "==", user?.id)).then(({ docs }) => {
+          for (const dc of docs) update("linkings", dc.id, linkingData);
+        });
+        const schedData = {
+          studentName: name,
+        };
+        get("schedules", where("studentId", "==", user?.id)).then(
+          ({ docs }) => {
+            for (const dc of docs) update("linkings", dc.id, schedData);
+          }
+        );
 
         setUser({
           id: user?.id,
@@ -64,7 +88,7 @@ const ProfileScreen = () => {
     if (!image) return;
 
     dispatch({
-      process: async ({ update }) => {
+      process: async ({ update, get, where }) => {
         const imageUrl = await uploadImage(image, `image_${Date.now()}`);
         if (!imageUrl) {
           Alert.alert("Error", "Unable to save image!!!");
@@ -78,6 +102,13 @@ const ProfileScreen = () => {
         setUser({
           ...user,
           image: imageUrl,
+        });
+        
+        const linkingData = {
+          studentImage: imageUrl,
+        };
+        get("linkings", where("studentId", "==", user?.id)).then(({ docs }) => {
+          for (const dc of docs) update("linkings", dc.id, linkingData);
         });
 
         Alert.alert("Successfully changed profile image.");

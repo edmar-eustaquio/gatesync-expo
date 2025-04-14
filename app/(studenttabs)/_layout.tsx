@@ -1,9 +1,30 @@
 import { Tabs } from 'expo-router';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Image, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { db } from '@/firebase';
+import { useAppContext } from '@/AppProvider';
 
 export default function TabLayout() {
+
+  const {user} = useAppContext()
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const uns =  onSnapshot(
+      query(
+        collection(db, "notifications"),
+        where("receiverId", "==", user?.id)
+      ),
+      (snap: any) => {
+        setCount(snap.docs.length)
+      }
+    );
+
+    return () => uns();
+  }, [])
 
   return (
     <Tabs
@@ -48,8 +69,9 @@ export default function TabLayout() {
                 resizeMode: 'contain',
               }}
             />
+
             {/* Pending Count Badge */}
-            {/* {route.name === 'Notification' && pendingCount > 0 && (
+            {route.name === 'notification' && count > 0 && (
               <View
                 style={{
                   position: 'absolute',
@@ -64,10 +86,10 @@ export default function TabLayout() {
                 }}
               >
                 <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
-                  {pendingCount}
+                  {count}
                 </Text>
               </View>
-            )} */}
+            )}
           </View>
           );
         },

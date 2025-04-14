@@ -103,11 +103,11 @@ export default function useFirebaseHook() {
       orderBy,
     })
       .catch((e) => {
-        console.log("has error", e);
+        console.log("has error", e.message);
 
-        setError(e);
+        setError(e.message);
         setIsError(true);
-        if (onError) onError(e);
+        if (onError) onError(e.message);
       })
       .finally(() => {
         if (finished) finished();
@@ -151,4 +151,16 @@ const remove = async (collectionName: string, uid: string) => {
   await deleteDoc(doc(db, collectionName, uid));
 };
 
-export { update };
+const removeSeenNotifs = (id: string, title: string) => {
+  getDocs(
+    query(
+      collection(db, "notifications"),
+      where("receiverId", "==", id),
+      where("title", "==", title)
+    )
+  ).then(({ docs }) => {
+    for (const dc of docs) deleteDoc(doc(db, "notifications", dc.id));
+  });
+};
+
+export { update, removeSeenNotifs };

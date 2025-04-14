@@ -11,8 +11,8 @@ const MyscheduleScreen = () => {
   
   useEffect(() => {
     dispatch({
-      process: async ({get, where}) => {
-          const snap = await get('schedules', where('studentId', '==', user?.id));
+      process: async ({get, where, orderBy}) => {
+          const snap = await get('schedules', where('studentId', '==', user?.id), orderBy('date', 'desc'));
           setSchedules(snap.docs.map(doc => ({...doc.data()})))
       }, onError: (error) => {
         console.error('Error fetching schedules:', error);

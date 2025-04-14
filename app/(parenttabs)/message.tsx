@@ -8,7 +8,7 @@ import {
   Image,
 } from "react-native";
 import { useAppContext } from "@/AppProvider";
-import useFirebaseHook from "@/hooks/useFirebaseHook";
+import useFirebaseHook, { removeSeenNotifs } from "@/hooks/useFirebaseHook";
 import {
   collection,
   onSnapshot,
@@ -33,6 +33,7 @@ const MessageScreen = () => {
     let unsubscribe: any = null;
     dispatch({
       process: async ({ get, where }) => {
+        if (user?.id) removeSeenNotifs(user?.id, "Message");
         const snap = await get(
           "linkings",
           where("parentId", "==", user?.id),

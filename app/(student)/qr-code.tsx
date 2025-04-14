@@ -1,14 +1,11 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect } from 'react';
 import { 
   View, Text, StyleSheet, TouchableOpacity, StatusBar, NativeModules, 
-  Platform, InteractionManager, AppState ,
+  Platform, AppState ,
   Alert,
 } from 'react-native';
 // import LinearGradient from 'react-native-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { auth, db } from '@/firebase';
-import { useFocusEffect } from '@react-navigation/native';
 import { useAppContext } from '@/AppProvider';
 import { router } from 'expo-router';
 

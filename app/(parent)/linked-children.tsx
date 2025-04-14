@@ -10,7 +10,7 @@ import {
   Alert,
 } from "react-native";
 import { useAppContext } from "@/AppProvider";
-import useFirebaseHook from "@/hooks/useFirebaseHook";
+import useFirebaseHook, { removeSeenNotifs } from "@/hooks/useFirebaseHook";
 import tw from "tailwind-react-native-classnames";
 import { router } from "expo-router";
 import useScreenFocusHook from "@/hooks/useScreenFocusHook";
@@ -35,7 +35,17 @@ const Linked = () => {
 
   useScreenFocusHook(() => {
     dispatchFetch({
-      process: refresh,
+      process: async ({ get, where }: { get: any; where: any }) => {
+        if (user?.id) removeSeenNotifs(user?.id, "Linking Status");
+
+        const snap = await get("linkings", where("parentId", "==", user?.id));
+        setLinkedChilds(
+          snap.docs.map((doc: any) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+      },
       onError: (error) => {
         console.log(error);
       },

@@ -63,7 +63,20 @@ export default function Login() {
       },
       onError: (error) => {
         console.error("Error logging in:", error);
-        Alert.alert("Error", `${error}`);
+
+        let errorMessage = "";
+        
+        if (error.includes("auth/invalid-email"))
+          errorMessage = "Invalid email address";
+        else if (error.includes("auth/user-not-found"))
+          errorMessage = "No account found with this email";
+        else if (error.includes("auth/wrong-password"))
+          errorMessage = "Incorrect password";
+        else if (error.includes("auth/too-many-requests"))
+          errorMessage = "Too many failed attempts. Please try again later";
+        else errorMessage = error;
+
+        Alert.alert("Error", errorMessage);
       },
     });
   };

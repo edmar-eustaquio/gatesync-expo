@@ -10,7 +10,7 @@ import {
 import { Platform, SafeAreaView, StatusBar } from "react-native";
 import { db } from "./firebase";
 import * as Notifications from "expo-notifications";
-import { router, useRootNavigationState } from "expo-router";
+import { router } from "expo-router";
 import { update } from "./hooks/useFirebaseHook";
 
 type UserProps = {
@@ -51,7 +51,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const notifRef = useRef<any>(null);
   const notifClickListenerRef = useRef<any>(null);
-  const navigationState = useRootNavigationState();
 
   useEffect(() => {
     async function requestPermissions() {
