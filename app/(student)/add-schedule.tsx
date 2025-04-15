@@ -75,7 +75,7 @@ const ScheduleScreen = () => {
           studentName: user?.name, // Updated field name
         };
 
-        await add("schedules", scheduleData);
+        const addSched = await add("schedules", scheduleData);
 
         get(
           "linkings",
@@ -86,6 +86,7 @@ const ScheduleScreen = () => {
             add("notifications", {
               receiverId: dc.data().parentId,
               route: "(parenttabs)/notification",
+              scheduleId: addSched.id,
               title: "Schedule Status",
               message: `Added new schedule.`,
               date: serverTimestamp(),

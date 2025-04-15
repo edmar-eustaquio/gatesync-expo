@@ -157,9 +157,9 @@ export default function Login() {
             <Text style={styles.buttonText}>Login</Text>
           </LoadingWrapper>
         </TouchableOpacity>
-        {/* <TouchableOpacity onPress={ ()=> navigation.navigate('ForgotPassword')}> */}
-        <Text style={styles.forgotpassword}>Forgot Password</Text>
-        {/* </TouchableOpacity> */}
+        <TouchableOpacity onPress={() => router.navigate("/forgot-password")}>
+          <Text style={styles.forgotpassword}>Forgot Password</Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
 
       <Text style={styles.haveacc}>Don't have an account?</Text>

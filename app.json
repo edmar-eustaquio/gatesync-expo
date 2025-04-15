@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "GateSync",
-    "slug": "gatesyncv2",
+    "slug": "gatesync",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -44,9 +44,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "d86db3f2-8714-4cef-9737-11cf4bc8ac17"
+        "projectId": "6ee1050e-a872-4303-9724-fc242b936cb7"
       }
     },
-    "owner": "juniorprogrammer"
+    "owner": "09052181646"
   }
 }

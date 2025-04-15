@@ -35,6 +35,8 @@ const ParentHomeScreen = () => {
   const { isLoading, dispatch } = useFirebaseHook();
 
   useScreenFocusHook(() => {
+    console.log("sdfsf");
+
     let unsubs: any = null;
     dispatch({
       process: async ({ get, where }) => {
@@ -110,13 +112,13 @@ const ParentHomeScreen = () => {
 
           {/* Displaying schedule in table format */}
           {/* Outer ScrollView for vertical scrolling */}
-          <ScrollView style={{ flex: 1 }}>
+          <ScrollView style={{ height: 250 }}>
             {/* Inner ScrollView for horizontal scrolling */}
             <ScrollView
               horizontal={true}
               contentContainerStyle={styles.scheduleTable}
             >
-              <View>
+              <View style={{ flexDirection: "column" }}>
                 {/* Table Header */}
                 <View style={styles.tableHeader}>
                   <Text style={styles.tableHeaderText}>Name</Text>
@@ -319,7 +321,7 @@ const styles = StyleSheet.create({
   },
   schedcontainer: {
     width: "90%",
-    height: 456,
+    // height: 400,
     backgroundColor: "#BCE5FF",
     shadowColor: "black",
     shadowOffset: { width: 4, height: 2 },
@@ -350,11 +352,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   tableHeader: {
+    width: 400,
     flexDirection: "row",
     justifyContent: "space-between",
     borderBottomWidth: 1,
     borderBottomColor: "#E9F3FF",
     paddingVertical: 10,
+    paddingRight: 25,
   },
   tableHeaderText: {
     fontWeight: "bold",
@@ -377,9 +381,11 @@ const styles = StyleSheet.create({
     right: 7,
   },
   tableRow: {
+    width: 400,
     flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 10,
+    paddingRight: 25,
     borderBottomWidth: 1,
     borderBottomColor: "#E9F3FF",
   },

@@ -56,22 +56,22 @@ export default function addEmergency() {
 
         await add("emergencies", emergencyData);
 
-        get(
-          "linkings",
-          where("studentId", "==", user?.id),
-          where("status", "==", "Accepted")
-        ).then(({ docs }) => {
-          for (const dc of docs) {
-            add("notifications", {
-              receiverId: dc.data().parentId,
-              title: "Emergency Status",
-              route: "(parenttabs)/notification",
-              message: `${user?.name} added emergency due to ${reason}.`,
-              date: serverTimestamp(),
-              prompt: false,
-            });
-          }
-        });
+        // get(
+        //   "linkings",
+        //   where("studentId", "==", user?.id),
+        //   where("status", "==", "Accepted")
+        // ).then(({ docs }) => {
+        //   for (const dc of docs) {
+        //     add("notifications", {
+        //       receiverId: dc.data().parentId,
+        //       title: "Emergency Status",
+        //       route: "(parenttabs)/notification",
+        //       message: `${user?.name} added emergency due to ${reason}.`,
+        //       date: serverTimestamp(),
+        //       prompt: false,
+        //     });
+        //   }
+        // });
 
         Alert.alert("Success", `Submitted Reason: ${reason}`);
       },

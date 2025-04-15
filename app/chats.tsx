@@ -53,7 +53,6 @@ const ChatPage = () => {
       let temp = [];
       for (const doc of querySnapshot.docs) {
         const message = doc.data();
-        console.log(message.participants, user?.id, otherUserId);
 
         if (message.participants.includes(otherUserId)) {
           temp.push({

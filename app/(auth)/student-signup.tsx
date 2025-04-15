@@ -26,7 +26,7 @@ import {
 import tw from "tailwind-react-native-classnames";
 
 export default function StudentSignup() {
-  const [pickerVisibility, setPickerVisibility] = useState(false);
+  // const [pickerVisibility, setPickerVisibility] = useState(false);
   const [name, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -185,7 +185,7 @@ export default function StudentSignup() {
             </View>
 
             <Text style={tw`text-base`}>Course</Text>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
               onPress={() => setPickerVisibility(!pickerVisibility)}
             >
@@ -193,16 +193,19 @@ export default function StudentSignup() {
                 {course == "" ? "Select Course" : course}
               </Text>
             </TouchableOpacity>
-            {pickerVisibility && (
+            {pickerVisibility && ( */}
+            <View
+              style={tw`w-full p-1 py-1 mb-2 mt-1 border border-gray-400 rounded-lg`}
+            >
               <Picker
-                style={[
-                  tw`w-full bg-gray-600 rounded-lg`,
-                  { borderColor: "#ddd", height: 200 },
-                ]}
+                style={
+                  // tw`w-full bg-gray-600 rounded-lg`,
+                  tw`w-full px-2 bg-white`
+                }
                 selectedValue={course}
                 onValueChange={(value) => {
                   setCourse(value);
-                  setPickerVisibility(false);
+                  // setPickerVisibility(false);
                 }}
               >
                 <Picker.Item label="Select Course" value="" />
@@ -218,7 +221,8 @@ export default function StudentSignup() {
                   value="Senior High School"
                 />
               </Picker>
-            )}
+            </View>
+            {/* )} */}
             <Text style={tw`text-base`}>Email</Text>
             <TextInput
               style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}

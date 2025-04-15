@@ -103,13 +103,25 @@ export default function TabLayout() {
         },
         headerShown: false, // Hide headers for tab screens
       })}
-    />
-    // <Tabs.Screen
-    //   name="index"
-    //   options={{
-    //     title: 'Home',
-    //     tabBarIcon: ({ color }) => <MaterialIcons color={color} size={28} name={'home'} />,
-    //   }}
-    // />
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+        }}
+      />
+      <Tabs.Screen
+        name="message"
+        options={{
+          title: "Message",
+        }}
+      />
+      <Tabs.Screen
+        name="notification"
+        options={{
+          title: "Notification",
+        }}
+      />
+    </Tabs>
   );
 }
