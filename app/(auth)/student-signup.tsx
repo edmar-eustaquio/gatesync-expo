@@ -66,6 +66,11 @@ export default function StudentSignup() {
       return;
     }
 
+    if (password.trim().length < 6) {
+      Alert.alert("Error", "Password must be more than 5 characters");
+      return;
+    }
+
     dispatch({
       process: async ({ set, get, where }) => {
         const snap = await get("users", where("idNumber", "==", idNumber));

@@ -27,6 +27,30 @@ const MessageScreen = () => {
   const { user } = useAppContext();
 
   useEffect(() => {
+    const convertTimestamp = (input: any) => {
+      if (typeof input !== "string" || input === null || input === undefined)
+        return "Invalid Timestamp";
+
+      try {
+        const formattedInput = input.replace(" PM", "PM");
+        const [datePart, timePart, meridian] = formattedInput.split(/[\s:]+/);
+
+        // const [hour, minute] = [parseInt(timePart), parseInt(timePart[1])];
+        const hours =
+          meridian === "PM" && timePart !== "12"
+            ? parseInt(timePart) + 12
+            : parseInt(timePart);
+
+        const date = new Date(
+          `${datePart}T${hours.toString().padStart(2, "0")}:${timePart[1]}:00`
+        );
+
+        return date.toLocaleDateString();
+      } catch (e) {
+        return "Invalid Timestamp";
+      }
+    };
+
     const q = query(
       collection(db, "scanned_ids"),
       where("idNumber", "==", user?.idNumber),
@@ -42,11 +66,23 @@ const MessageScreen = () => {
       setActivities(
         querySnapshot.docs.map((doc: any) => {
           const data = doc.data();
-          console.log("Fetched activity doc data:", data); // Log the document data
+
+          const timestamp = data.timestamp;
+
+          // let formattedTimestamp = "Invalid timestamp";
+          // if (timestamp && !isNaN(Date.parse(timestamp))) {
+          //   const date = new Date(timestamp);
+          //   formattedTimestamp = date.toLocaleString();
+          // }
 
           return {
-            description: data.description,
-            timestamp: DateTimeConverter(data.date), // Safely format the timestamp
+            timestamp: convertTimestamp(data.timestamp), // Safely format the timestamp
+            // timestamp:
+            //   typeof timestamp === "string" &&
+            //   timestamp !== null &&
+            //   timestamp !== undefined
+            //     ? timestamp
+            //     : "Invalid timestamp", // Safely format the timestamp
             status: data.status,
           };
         })

@@ -16,66 +16,77 @@ import QRCode from "react-native-qrcode-svg";
 import { useAppContext } from "@/AppProvider";
 import { router } from "expo-router";
 import CustomTopbar from "@/components/CustomTopbar";
+import * as ScreenCapture from "expo-screen-capture";
 
 export default function Qr() {
   const { user } = useAppContext();
 
   useEffect(() => {
-    if (Platform.OS === "android" && NativeModules.PreventScreenshotModule) {
-      const timer = setTimeout(() => {
-        try {
-          console.log("Enabling secure mode...");
-          NativeModules.PreventScreenshotModule.enableSecureMode();
-
-          //   Toast.show({
-          //     type: 'success',
-          //     text1: 'Screenshot prevention is enabled',
-          //     position: 'bottom',
-          //     visibilityTime: 2000,
-          //   });
-        } catch (error) {
-          console.error("Failed to enable screenshot restriction:", error);
-        }
-      }, 3000); // Delay to prevent app crashes on initial render
-
-      return () => {
-        clearTimeout(timer);
-        if (
-          Platform.OS === "android" &&
-          NativeModules.PreventScreenshotModule
-        ) {
-          try {
-            console.log("Disabling secure mode...");
-            NativeModules.PreventScreenshotModule.disableSecureMode();
-            // Toast.show({
-            //   type: 'success',
-            //   text1: 'Screenshot prevention is disabled',
-            //   position: 'bottom',
-            //   visibilityTime: 2000,
-            // });
-          } catch (error) {
-            console.error("Failed to disable screenshot restriction:", error);
-          }
-        }
-      };
-    }
-
-    // iOS: Prevent the content from appearing in the task switcher
-    const appStateListener = AppState.addEventListener(
-      "change",
-      (nextAppState) => {
-        if (nextAppState === "background") {
-          console.log(
-            "App moved to background (possible screenshot prevention)"
-          );
-        }
-      }
-    );
+    // Prevent screen capture
+    ScreenCapture.preventScreenCaptureAsync();
 
     return () => {
-      appStateListener.remove();
+      // Allow screen capture again when the component unmounts
+      ScreenCapture.allowScreenCaptureAsync();
     };
   }, []);
+
+  // useEffect(() => {
+  //   if (Platform.OS === "android" && NativeModules.PreventScreenshotModule) {
+  //     const timer = setTimeout(() => {
+  //       try {
+  //         console.log("Enabling secure mode...");
+  //         NativeModules.PreventScreenshotModule.enableSecureMode();
+
+  //         //   Toast.show({
+  //         //     type: 'success',
+  //         //     text1: 'Screenshot prevention is enabled',
+  //         //     position: 'bottom',
+  //         //     visibilityTime: 2000,
+  //         //   });
+  //       } catch (error) {
+  //         console.error("Failed to enable screenshot restriction:", error);
+  //       }
+  //     }, 3000); // Delay to prevent app crashes on initial render
+
+  //     return () => {
+  //       clearTimeout(timer);
+  //       if (
+  //         Platform.OS === "android" &&
+  //         NativeModules.PreventScreenshotModule
+  //       ) {
+  //         try {
+  //           console.log("Disabling secure mode...");
+  //           NativeModules.PreventScreenshotModule.disableSecureMode();
+  //           // Toast.show({
+  //           //   type: 'success',
+  //           //   text1: 'Screenshot prevention is disabled',
+  //           //   position: 'bottom',
+  //           //   visibilityTime: 2000,
+  //           // });
+  //         } catch (error) {
+  //           console.error("Failed to disable screenshot restriction:", error);
+  //         }
+  //       }
+  //     };
+  //   }
+
+  //   // iOS: Prevent the content from appearing in the task switcher
+  //   const appStateListener = AppState.addEventListener(
+  //     "change",
+  //     (nextAppState) => {
+  //       if (nextAppState === "background") {
+  //         console.log(
+  //           "App moved to background (possible screenshot prevention)"
+  //         );
+  //       }
+  //     }
+  //   );
+
+  //   return () => {
+  //     appStateListener.remove();
+  //   };
+  // }, []);
 
   return (
     <SafeAreaView
@@ -93,7 +104,7 @@ export default function Qr() {
             {/* {isLoading ? (
                   <Text>Loading QR Code...</Text>
                 ) : qrData ? ( */}
-            <QRCode value={user?.qrData} size={200} />
+            <QRCode value={user?.idNumber} size={200} />
             {/* ) : (
                   <Text>No QR Code Available</Text>
                 )} */}
