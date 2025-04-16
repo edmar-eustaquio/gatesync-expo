@@ -1,6 +1,7 @@
 import { useAppContext } from "@/AppProvider";
 import CustomTopbar from "@/components/CustomTopbar";
 import { uploadImage } from "@/helper/cloudinary";
+import { existsInUser } from "@/helper/duplicateChecker";
 import { selectImage } from "@/helper/ImageSelector";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import React, { useState, useEffect } from "react";
@@ -28,10 +29,30 @@ const ProfileScreen = () => {
 
   const { isLoading, dispatch } = useFirebaseHook();
 
-  const handleSaveChanges = () =>
+  const handleSaveChanges = () => {
+    if (!name || !contactNumber) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
     dispatch({
       process: async ({ update, get, where }) => {
         if (!user?.id) return;
+
+        const nameExists = await existsInUser(user, "name", name);
+        if (nameExists) {
+          Alert.alert("Error", "Name already exists");
+          return;
+        }
+        const numberExists = await existsInUser(
+          user,
+          "contactNumber",
+          contactNumber
+        );
+        if (numberExists) {
+          Alert.alert("Error", "Contact number already exists");
+          return;
+        }
 
         await update("users", user?.id, {
           name: name,
@@ -62,6 +83,7 @@ const ProfileScreen = () => {
         Alert.alert("Error", "Failed to update profile");
       },
     });
+  };
 
   const onSendImage = async () => {
     if (!user?.id) return;
@@ -156,7 +178,10 @@ const ProfileScreen = () => {
                 style={styles.input}
                 placeholder="User Name"
                 value={name}
-                onChangeText={setName}
+                onChangeText={(text) =>
+                  setName(text.replace(/[^a-zA-Z\s]/g, ""))
+                }
+                // onChangeText={setName}
               />
               <TextInput
                 style={styles.input}

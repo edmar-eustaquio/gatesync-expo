@@ -161,6 +161,41 @@ const LinkedParent = () => {
     );
   };
 
+  const onCancel = async (id: string, receiverId: string) => {
+    Alert.alert(
+      "Confirmation",
+      "Are you sure you want to cancel this linking request?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          style: "destructive",
+          onPress: async () => {
+            dispatch({
+              process: async ({ add, serverTimestamp, remove, get, where }) => {
+                await remove("linkings", id);
+
+                add("notifications", {
+                  receiverId: receiverId,
+                  title: "Linking Status",
+                  message: `${user?.name} cancelled its link request.`,
+                  date: serverTimestamp(),
+                  route: "/linked-children",
+                  prompt: false,
+                });
+
+                refresh({ get, where });
+              },
+              onError: (error) => {
+                console.log(error);
+              },
+            });
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -216,11 +251,22 @@ const LinkedParent = () => {
                     Declined
                   </Text>
                 ) : linking.requestByStudent && linking.status == "Pending" ? (
-                  <Text
-                    style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-yellow-400 text-yellow-400`}
-                  >
-                    Pending
-                  </Text>
+                  <>
+                    <Text
+                      style={tw`text-base border-2 px-4 rounded-md font-semibold mt-4 py-1 border-yellow-400 text-yellow-400`}
+                    >
+                      Pending
+                    </Text>
+
+                    <TouchableOpacity
+                      style={tw`bg-red-700 rounded-md px-3 py-1 mt-2`}
+                      onPress={() => onCancel(linking.id, linking.parentId)}
+                    >
+                      <Text style={tw`text-white text-base font-semibold`}>
+                        Cancel Request
+                      </Text>
+                    </TouchableOpacity>
+                  </>
                 ) : linking.status == "Pending" ? (
                   <View style={tw`w-full mt-4 flex-row justify-center`}>
                     <TouchableOpacity

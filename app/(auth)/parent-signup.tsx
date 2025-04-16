@@ -1,5 +1,6 @@
 import LoadingWrapper from "@/components/LoadingWrapper";
 import { auth } from "@/firebase";
+import { existsInUser } from "@/helper/duplicateChecker";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Picker } from "@react-native-picker/picker";
@@ -63,13 +64,28 @@ export default function StudentSignup() {
       return;
     }
 
-    if (password.trim().length < 6) {
-      Alert.alert("Error", "Password must be more than 5 characters");
+    if (password.trim().length < 8) {
+      Alert.alert("Error", "Password must be 8 characters or more");
       return;
     }
 
     dispatch({
       process: async ({ set }) => {
+        const nameExists = await existsInUser(null, "name", name);
+        if (nameExists) {
+          Alert.alert("Error", "Name already exists");
+          return;
+        }
+        const numberExists = await existsInUser(
+          null,
+          "contactNumber",
+          contactNumber
+        );
+        if (numberExists) {
+          Alert.alert("Error", "Contact number already exists");
+          return;
+        }
+
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -145,7 +161,9 @@ export default function StudentSignup() {
               style={tw`w-full p-3 text-base mb-2 mt-1 border border-gray-400 rounded-lg bg-white`}
               placeholder="Enter name"
               value={name}
-              onChangeText={setUsername}
+              onChangeText={(text) =>
+                setUsername(text.replace(/[^a-zA-Z\s]/g, ""))
+              }
               placeholderTextColor={"#686D76"}
             />
             <Text style={tw`text-base`}>Contact Number</Text>

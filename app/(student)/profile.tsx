@@ -1,6 +1,7 @@
 import { useAppContext } from "@/AppProvider";
 import CustomTopbar from "@/components/CustomTopbar";
 import { uploadImage } from "@/helper/cloudinary";
+import { existsInUser } from "@/helper/duplicateChecker";
 import { selectImage } from "@/helper/ImageSelector";
 import useFirebaseHook from "@/hooks/useFirebaseHook";
 import React, { useState, useEffect } from "react";
@@ -30,18 +31,34 @@ const ProfileScreen = () => {
 
   const { isLoading, dispatch } = useFirebaseHook();
 
-  const handleSaveChanges = () =>
+  const handleSaveChanges = () => {
+    if (!name || !course || !idNumber || !yearLevel) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
     dispatch({
       process: async ({ update, get, where }) => {
         if (!user?.id) return;
 
-        const snap = await get("users", where("idNumber", "==", idNumber));
-        for (const dc of snap.docs) {
-          if (dc.id != user?.id) {
-            Alert.alert("Error", "Student ID already exists");
-            return;
-          }
+        const nameExists = await existsInUser(user, "name", name);
+        if (nameExists) {
+          Alert.alert("Error", "Name already exists");
+          return;
         }
+
+        const idNumberExists = await existsInUser(user, "idNumber", idNumber);
+        if (idNumberExists) {
+          Alert.alert("Error", "Student ID already exists");
+          return;
+        }
+        // const snap = await get("users", where("idNumber", "==", idNumber));
+        // for (const dc of snap.docs) {
+        //   if (dc.id != user?.id) {
+        //     Alert.alert("Error", "Student ID already exists");
+        //     return;
+        //   }
+        // }
 
         await update("users", user?.id, {
           name: name,
@@ -84,6 +101,7 @@ const ProfileScreen = () => {
         Alert.alert("Error", "Failed to update profile");
       },
     });
+  };
 
   const onSendImage = async () => {
     if (!user?.id) return;
@@ -184,7 +202,9 @@ const ProfileScreen = () => {
                 style={styles.input}
                 placeholder="User Name"
                 value={name}
-                onChangeText={setName}
+                onChangeText={(text) =>
+                  setName(text.replace(/[^a-zA-Z\s]/g, ""))
+                }
               />
               <TextInput
                 style={styles.input}
@@ -196,12 +216,14 @@ const ProfileScreen = () => {
                 style={styles.input}
                 placeholder="ID Number"
                 value={idNumber}
+                keyboardType="numeric"
                 onChangeText={setIdNumber}
               />
               <TextInput
                 style={styles.input}
                 placeholder="Year Level"
                 value={yearLevel}
+                keyboardType="numeric"
                 onChangeText={setYearLevel}
               />
 

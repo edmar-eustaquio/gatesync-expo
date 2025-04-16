@@ -62,42 +62,55 @@ export default function StudentsList() {
   }, [search]);
 
   const onLink = (student: any) => {
-    dispatch({
-      process: async ({ add, serverTimestamp }) => {
-        let data: { [key: string]: any } = {
-          status: "Pending",
-          studentId: student.id,
-          studentName: student.name,
-          studentEmail: student.email,
-          studentIdNumber: student.idNumber,
-          parentContactNumber: user?.contactNumber,
-          parentId: user?.id,
-          parentName: user?.name,
-          parentEmail: user?.email,
-          requestByStudent: false,
-        };
-        if (user?.image) data.parentImage = user.image;
-        if (student.image) data.studentImage = student.image;
-        await add("linkings", data);
+    Alert.alert(
+      "Confirmation",
+      "Are you sure you want to link in this student?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          style: "destructive",
+          onPress: async () => {
+            dispatch({
+              process: async ({ add, serverTimestamp }) => {
+                let data: { [key: string]: any } = {
+                  status: "Pending",
+                  studentId: student.id,
+                  studentName: student.name,
+                  studentEmail: student.email,
+                  studentIdNumber: student.idNumber,
+                  parentContactNumber: user?.contactNumber,
+                  parentId: user?.id,
+                  parentName: user?.name,
+                  parentEmail: user?.email,
+                  requestByStudent: false,
+                };
+                if (user?.image) data.parentImage = user.image;
+                if (student.image) data.studentImage = student.image;
+                await add("linkings", data);
 
-        add("notifications", {
-          receiverId: student.id,
-          title: "Linking Status",
-          message: `${user?.name} wants to link with you.`,
-          route: "/linked-parents",
-          date: serverTimestamp(),
-          prompt: false,
-        });
+                add("notifications", {
+                  receiverId: student.id,
+                  title: "Linking Status",
+                  message: `${user?.name} wants to link with you.`,
+                  route: "/linked-parents",
+                  date: serverTimestamp(),
+                  prompt: false,
+                });
 
-        setStudents(students.filter((p) => p.id !== student.id));
-        setFiltered(filtered.filter((p) => p.id !== student.id));
+                setStudents(students.filter((p) => p.id !== student.id));
+                setFiltered(filtered.filter((p) => p.id !== student.id));
 
-        Alert.alert("Successfully linked.");
-      },
-      onError: (err) => {
-        Alert.alert("Error linking to this parent!!!");
-      },
-    });
+                Alert.alert("Success", "Successfully linked.");
+              },
+              onError: (err) => {
+                Alert.alert("Error linking to this parent!!!");
+              },
+            });
+          },
+        },
+      ]
+    );
   };
 
   return (
