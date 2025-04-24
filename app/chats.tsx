@@ -62,6 +62,9 @@ const ChatPage = () => {
         }
       }
       setMessages(temp);
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
     });
 
     return () => unsubscribe(); // Unsubscribe when component unmounts
@@ -134,9 +137,9 @@ const ChatPage = () => {
 
           <ScrollView
             ref={scrollViewRef}
-            onContentSizeChange={() =>
-              scrollViewRef.current?.scrollToEnd({ animated: true })
-            }
+            // onContentSizeChange={() =>
+            //   scrollViewRef.current?.scrollToEnd({ animated: true })
+            // }
           >
             {messages.map((item: any) => (
               <View

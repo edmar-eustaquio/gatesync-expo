@@ -140,7 +140,7 @@ const MessageScreen = () => {
                       <Text style={tw`text-lg font-bold ml-4`}>
                         {value.studentName}
                       </Text>
-                      <Text style={tw`ml-4`}>
+                      <Text style={[tw`ml-4`, {maxWidth: '90%'}]}>
                         {value.message ?? "No messages yet."}
                       </Text>
                     </View>

@@ -35,6 +35,12 @@ const ProfileScreen = () => {
       return;
     }
 
+    const contactNumberRegex = /^\d{11}$/;
+    if (!contactNumberRegex.test(contactNumber)) {
+      Alert.alert("Error", "Contact number must be exactly 11 digits");
+      return;
+    }
+
     dispatch({
       process: async ({ update, get, where }) => {
         if (!user?.id) return;

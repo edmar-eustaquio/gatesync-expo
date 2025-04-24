@@ -32,10 +32,10 @@ const MessageScreen = () => {
         return "Invalid Timestamp";
 
       try {
-        const formattedInput = input.replace(" PM", "PM");
+        const isPM = input.includes("PM");
+        const formattedInput = input.replace(" PM", "PM").replace(" AM", "AM");
         const [datePart, timePart, meridian] = formattedInput.split(/[\s:]+/);
 
-        // const [hour, minute] = [parseInt(timePart), parseInt(timePart[1])];
         const hours =
           meridian === "PM" && timePart !== "12"
             ? parseInt(timePart) + 12
@@ -45,7 +45,7 @@ const MessageScreen = () => {
           `${datePart}T${hours.toString().padStart(2, "0")}:${timePart[1]}:00`
         );
 
-        return date.toLocaleDateString();
+        return `${date.toLocaleDateString()} ${hours.toString().padStart(2, "0")}:${meridian} ${isPM ? "PM" : "AM"}`;
       } catch (e) {
         return "Invalid Timestamp";
       }
@@ -185,12 +185,14 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontFamily: "Kanit",
     color: "#5394F2",
-    top: "10%",
+    marginTop: 10,
+    marginLeft: 20
   },
   noActivitiesContainer: {
     backgroundColor: "#FFCCCB",
     padding: 15,
     borderRadius: 10,
+    marginHorizontal: 20,
     marginTop: 30,
     alignItems: "center",
   },

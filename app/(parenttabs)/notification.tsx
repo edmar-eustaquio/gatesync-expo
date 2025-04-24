@@ -1,6 +1,8 @@
 import { useAppContext } from "@/AppProvider";
+import NotifHeader from "@/components/NotifHeader";
 import ParentTopBar from "@/components/ParentTopBar";
 import { db } from "@/firebase";
+import { DateTimeConverter } from "@/helper/DateTimeConverter";
 import useScreenFocusHook from "@/hooks/useScreenFocusHook";
 import { router } from "expo-router";
 import {
@@ -44,7 +46,10 @@ const NotificationScreen = () => {
       ),
       (snap) => {
         setNotifications(
-          snap.docs.map((val) => ({ id: val.id, ...val.data() }))
+          snap.docs.map((val) => {
+            const data = val.data();
+            return { id: val.id, ...data, date: DateTimeConverter(data.date) };
+          })
         );
 
         if (!loaded) setLoaded(true);
@@ -65,7 +70,7 @@ const NotificationScreen = () => {
     >
       <ParentTopBar title="Notifications" />
 
-      <View style={styles.box} />
+      {/* <View style={styles.box} />
       <Image
         source={require("@/assets/images/Updates.png")}
         style={styles.notificon}
@@ -95,9 +100,11 @@ const NotificationScreen = () => {
         }}
       >
         List
-      </Text>
+      </Text> */}
 
-      <View style={{ height: 180 }} />
+      {/* <View style={{ height: 180 }} /> */}
+
+      <NotifHeader />
 
       <ScrollView
         style={styles.container}
@@ -124,6 +131,7 @@ const NotificationScreen = () => {
             >
               <Text style={tw`text-lg font-bold mb-1`}>{value.title}</Text>
               <Text>{value.message}</Text>
+              <Text style={{marginTop: 5}}>{value.date}</Text>
             </TouchableOpacity>
           ))
         )}
